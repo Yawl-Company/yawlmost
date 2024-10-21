@@ -5,14 +5,8 @@
   roles:
     - docker
 
-- name: "Setup master host with Docker Swarm"
-  hosts: managers
-  become: true
-  roles:
-    - swarm
-
-- name: "Setup workers hosts with Docker Swarm"
-  hosts: workers
+- name: "Setup Docker Swarm"
+  hosts: all
   become: true
   roles:
     - swarm

@@ -1,1 +1,14 @@
 ---
+- name: Check docker module requirements
+  ansible.builtin.import_tasks:
+    file: module_requirements.yml
+
+- name: Initialize Docker Swarm on manager
+  ansible.builtin.import_tasks:
+    file: init_swarm.yml
+  when: inventory_hostname in groups['managers']
+
+- name: Join workers to Docker Swarm manager
+  ansible.builtin.import_tasks:
+    file: join_swarm.yml
+  when: inventory_hostname in groups['workers']

@@ -1,0 +1,11 @@
+---
+- name: Initialize Docker Swarm on manager
+  community.docker.docker_swarm:
+    state: present
+    advertise_addr: "{{ ansible_default_ipv4.address }}"
+  register: swarm_init
+
+- name: Retrieve the Swarm Info
+  community.docker.docker_swarm_info:
+    nodes: true
+  register: swarm_info
