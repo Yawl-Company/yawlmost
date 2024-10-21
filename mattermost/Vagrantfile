@@ -69,8 +69,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.playbook = $playbook
             ansible.limit = "all"
             ansible.groups = {
-                "managers" => ["manager"],
-                "workers"  => ["worker-[1:2]"],
+                "managers" => [manager[:hostname]],
+                "workers"  => workers.map {
+                    |worker| worker[:hostname]
+                },
             }
         end
     end
