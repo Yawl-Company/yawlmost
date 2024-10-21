@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - docker
+
+- hosts: manager
+  become: yes
+  roles:
+    - swarm
+    - portainer
+
+- hosts: workers
+  become: yes
+  roles:
+    - swarm

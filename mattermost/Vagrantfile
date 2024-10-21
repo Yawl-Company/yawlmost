@@ -1,0 +1,76 @@
+# Core vagrant configuration
+VAGRANTFILE_API_VERSION = "2"
+
+# Core machines configuration
+# Reference: https://docs.mattermost.com/install/install-ubuntu.html
+$box = "bento/ubuntu-20.04-arm64"
+$vm_memory = 2048
+$vm_cpus = 2
+
+# Ansible provision configuration
+$playbook = "ansible/playbook.yml"
+$inventory = "ansible/inventory.ini"
+
+manager = {
+  :hostname => "manager",
+  :box => $box,
+  :ram => $vm_memory,
+  :cpu => $vm_cpus
+}
+
+workers = [
+    {
+      :hostname => "worker-1",
+      :box => $box,
+      :ram => $vm_memory,
+      :cpu => $vm_cpus
+    },
+    {
+      :hostname => "worker-2",
+      :box => $box,
+      :ram => $vm_memory,
+      :cpu => $vm_cpus
+    }
+]
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+    # workaround for "SSH connection was unexpectedly closed by the remote end"
+    # See: https://github.com/hashicorp/vagrant/issues/7681
+    config.ssh.keep_alive = true
+
+    # configure worker machines
+    workers.each do |machine|
+        config.vm.define machine[:hostname] do |node|
+            node.vm.box = machine[:box]
+            node.vm.hostname = machine[:hostname]
+            node.vm.network "private_network"
+            node.vm.provider "vmware_desktop" do |vmware|
+                vmware.memory = machine[:ram]
+                vmware.cpus = machine[:cpu]
+            end
+        end
+    end
+
+    # configure cluster master machine
+    config.vm.define manager[:hostname] do |node|
+        node.vm.box = manager[:box]
+        node.vm.hostname = manager[:hostname]
+        node.vm.network "private_network"
+        node.vm.provider "vmware_desktop" do |vmware|
+            vmware.memory = manager[:ram]
+            vmware.cpus = manager[:cpu]
+            vmware.allowlist_verified = true
+        end
+
+        node.vm.provision "ansible" do |ansible|
+            ansible.compatibility_mode = "1.8"
+            ansible.playbook = $playbook
+            ansible.limit = "all"
+            ansible.groups = {
+                "manager" => ["manager"],
+                "worker"  => ["worker-[1:2]"],
+            }
+        end
+    end
+end
