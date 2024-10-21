@@ -34,6 +34,8 @@ managers = [
     }
 ]
 
+# Use multiple workers nodes for load balance
+# Reference: https://docs.docker.com/engine/swarm/admin_guide/#add-worker-nodes-for-load-balancing
 workers = [
     {
       :hostname => "worker-1",
