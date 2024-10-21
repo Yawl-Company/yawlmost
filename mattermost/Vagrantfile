@@ -43,6 +43,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         config.vm.define machine[:hostname] do |node|
             node.vm.box = machine[:box]
             node.vm.hostname = machine[:hostname]
+            # Do not specify custom ip
+            # See: https://developer.hashicorp.com/vagrant/docs/providers/vmware/known-issues
             node.vm.network "private_network"
             node.vm.provider "vmware_desktop" do |vmware|
                 vmware.memory = machine[:ram]
@@ -55,6 +57,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define manager[:hostname] do |node|
         node.vm.box = manager[:box]
         node.vm.hostname = manager[:hostname]
+        # Do not specify custom ip
+        # See: https://developer.hashicorp.com/vagrant/docs/providers/vmware/known-issues
         node.vm.network "private_network"
         node.vm.provider "vmware_desktop" do |vmware|
             vmware.memory = manager[:ram]
