@@ -35,11 +35,11 @@ workers = [
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-    # workaround for "SSH connection was unexpectedly closed by the remote end"
+    # Workaround for "SSH connection was unexpectedly closed by the remote end"
     # See: https://github.com/hashicorp/vagrant/issues/7681
     config.ssh.keep_alive = true
 
-    # configure worker machines
+    # Configure worker machines
     workers.each do |machine|
         config.vm.define machine[:hostname] do |node|
             node.vm.box = machine[:box]
@@ -52,7 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
     end
 
-    # configure cluster master machine
+    # Configure cluster master machine
     config.vm.define manager[:hostname] do |node|
         node.vm.box = manager[:box]
         node.vm.hostname = manager[:hostname]
@@ -63,6 +63,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vmware.allowlist_verified = true
         end
 
+        # We don't want to install ansible on guest machines
+        # so we're using plain ansible (not ansible_local)
         node.vm.provision "ansible" do |ansible|
             ansible.compatibility_mode = "1.8"
             ansible.playbook = $playbook

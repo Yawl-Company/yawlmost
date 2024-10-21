@@ -4,7 +4,7 @@
   roles:
     - docker
 
-- hosts: manager
+- hosts: managers
   become: yes
   roles:
     - swarm
