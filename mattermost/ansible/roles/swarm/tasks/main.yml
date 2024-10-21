@@ -3,12 +3,17 @@
   ansible.builtin.import_tasks:
     file: module_requirements.yml
 
-- name: Initialize Docker Swarm on manager
+- name: Initialize Docker Swarm on leader manager
   ansible.builtin.import_tasks:
     file: init_swarm.yml
+  when: inventory_hostname in groups['leaders']
+
+- name: Join managers to Docker Swarm leader manager
+  ansible.builtin.import_tasks:
+    file: join_managers.yml
   when: inventory_hostname in groups['managers']
 
-- name: Join workers to Docker Swarm manager
+- name: Join workers to Docker Swarm leader manager
   ansible.builtin.import_tasks:
-    file: join_swarm.yml
+    file: join_workers.yml
   when: inventory_hostname in groups['workers']

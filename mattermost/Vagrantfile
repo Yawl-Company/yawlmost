@@ -10,12 +10,29 @@ $vm_cpus = 2
 # Ansible provision configuration
 $playbook = "ansible/playbook.yml"
 
-manager = {
-  :hostname => "manager",
-  :box => $box,
-  :ram => $vm_memory,
-  :cpu => $vm_cpus
+# We must use odd number of manager nodes
+# Reference: https://docs.docker.com/engine/swarm/admin_guide/#add-manager-nodes-for-fault-tolerance
+leader = {
+    :hostname => "manager-1",
+    :box => $box,
+    :ram => $vm_memory,
+    :cpu => $vm_cpus
 }
+
+managers = [
+    {
+      :hostname => "manager-2",
+      :box => $box,
+      :ram => $vm_memory,
+      :cpu => $vm_cpus
+    },
+    {
+      :hostname => "manager-3",
+      :box => $box,
+      :ram => $vm_memory,
+      :cpu => $vm_cpus
+    }
+]
 
 workers = [
     {
@@ -32,55 +49,59 @@ workers = [
     }
 ]
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+def configure_machine_node(config, machine, node)
+    node.vm.box = machine[:box]
+    node.vm.hostname = machine[:hostname]
+    # Do not specify custom ip
+    # See: https://developer.hashicorp.com/vagrant/docs/providers/vmware/known-issues
+    node.vm.network "private_network"
+    node.vm.provider "vmware_desktop" do |vmware|
+      vmware.memory = machine[:ram]
+      vmware.cpus = machine[:cpu]
+      vmware.allowlist_verified = true
+    end
+end
 
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Workaround for "SSH connection was unexpectedly closed by the remote end"
     # See: https://github.com/hashicorp/vagrant/issues/7681
     config.ssh.keep_alive = true
 
-    # Configure worker machines
-    workers.each do |machine|
+    # Configure manager machines
+    managers.each do |machine|
         config.vm.define machine[:hostname] do |node|
-            node.vm.box = machine[:box]
-            node.vm.hostname = machine[:hostname]
-            # Do not specify custom ip
-            # See: https://developer.hashicorp.com/vagrant/docs/providers/vmware/known-issues
-            node.vm.network "private_network"
-            node.vm.provider "vmware_desktop" do |vmware|
-                vmware.memory = machine[:ram]
-                vmware.cpus = machine[:cpu]
-            end
+            configure_machine_node(config, machine, node)
         end
     end
 
-    # Configure cluster master machine
-    config.vm.define manager[:hostname] do |node|
-        node.vm.box = manager[:box]
-        node.vm.hostname = manager[:hostname]
-        # Do not specify custom ip
-        # See: https://developer.hashicorp.com/vagrant/docs/providers/vmware/known-issues
-        node.vm.network "private_network"
-        node.vm.provider "vmware_desktop" do |vmware|
-            vmware.memory = manager[:ram]
-            vmware.cpus = manager[:cpu]
-            vmware.allowlist_verified = true
+    # Configure worker machines
+    workers.each_with_index do |machine, index|
+        config.vm.define machine[:hostname] do |node|
+            configure_machine_node(config, machine, node)
         end
+    end
 
-        # We don't want to install ansible on guest machines
+    # Configure leader-manager machine
+    config.vm.define leader[:hostname] do |node|
+        configure_machine_node(config, leader, node)
+        # We don't want to install Ansible on guest machines
         # so we're using plain ansible (not ansible_local)
         node.vm.provision "ansible" do |ansible|
             ansible.compatibility_mode = "1.8"
             ansible.playbook = $playbook
             ansible.limit = "all"
             ansible.groups = {
-                "managers" => [manager[:hostname]],
+                "leaders" => [leader[:hostname]],
+                "managers" => managers.map {
+                    |manager| manager[:hostname]
+                },
                 "workers"  => workers.map {
                     |worker| worker[:hostname]
                 },
             }
             # Explicitly specify python3 interpreter
             ansible.extra_vars = {
-                ansible_python_interpreter:"/usr/bin/python3"
+                ansible_python_interpreter: "/usr/bin/python3"
             }
         end
     end
