@@ -1,16 +1,18 @@
 ---
-- hosts: all
-  become: yes
+- name: "Install Docker on all hosts"
+  hosts: all
+  become: true
   roles:
     - docker
 
-- hosts: managers
-  become: yes
+- name: "Setup master host with Docker Swarm"
+  hosts: managers
+  become: true
   roles:
     - swarm
-    - portainer
 
-- hosts: workers
-  become: yes
+- name: "Setup workers hosts with Docker Swarm"
+  hosts: workers
+  become: true
   roles:
     - swarm
