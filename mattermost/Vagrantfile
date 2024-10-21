@@ -9,7 +9,6 @@ $vm_cpus = 2
 
 # Ansible provision configuration
 $playbook = "ansible/playbook.yml"
-$inventory = "ansible/inventory.ini"
 
 manager = {
   :hostname => "manager",
@@ -70,8 +69,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.playbook = $playbook
             ansible.limit = "all"
             ansible.groups = {
-                "manager" => ["manager"],
-                "worker"  => ["worker-[1:2]"],
+                "managers" => ["manager"],
+                "workers"  => ["worker-[1:2]"],
             }
         end
     end
