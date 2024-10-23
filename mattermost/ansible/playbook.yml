@@ -11,6 +11,12 @@
   roles:
     - swarm
 
+- name: "Deploy Portainer"
+  hosts: leaders
+  become: true
+  roles:
+    - portainer
+
 - name: "Deploy Mattermost on Docker Swarm Cluster"
   hosts: leaders
   become: true

@@ -1,0 +1,14 @@
+- name: Ensure portainer directory exists
+  file:
+    path: /home/{{ ansible_user }}/portainer
+    state: directory
+
+- name: Copy Docker Compose template
+  template:
+    src: docker-compose.yml
+    dest: /home/{{ ansible_user }}/portainer/docker-compose.yml
+
+- name: Deploy Portainer stack
+  command: docker stack deploy --compose-file=/home/{{ ansible_user }}/portainer/docker-compose.yml portainer
+  args:
+    chdir: /home/{{ ansible_user }}/portainer
