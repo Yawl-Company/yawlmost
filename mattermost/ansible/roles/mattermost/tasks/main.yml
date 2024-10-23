@@ -1,24 +1,4 @@
 ---
-- name: Create necessary directories for Mattermost
-  file:
-    path: "./volumes/app/mattermost/{{ item }}"
-    state: directory
-    mode: '0755'
-  loop:
-    - config
-    - data
-    - logs
-    - plugins
-    - client/plugins
-    - bleve-indexes
-
-- name: Set ownership for Mattermost directories
-  file:
-    path: "./volumes/app/mattermost"
-    owner: "2000"
-    group: "2000"
-    state: directory
-
 - name: Ensure mattermost directory exists
   file:
     path: /home/{{ ansible_user }}/mattermost
