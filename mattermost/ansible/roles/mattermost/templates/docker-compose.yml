@@ -9,6 +9,7 @@ services:
       - POSTGRES_PASSWORD=mmuser_password
       - POSTGRES_DB=mattermost
     deploy:
+      replicas: 1
       restart_policy:
         condition: on-failure
 
@@ -34,6 +35,7 @@ services:
       - MM_BLEVESETTINGS_INDEXDIR=/mattermost/bleve-indexes
       - MM_SERVICESETTINGS_SITEURL=http://localhost
     deploy:
+      replicas: 3
       restart_policy:
         condition: on-failure
 
