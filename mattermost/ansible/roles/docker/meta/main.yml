@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Bob Nicholson
+  description: Docker Installation
+  company: Yawl
+
+  license: Apache-2.0
+
+  min_ansible_version: 2.1
+
+  galaxy_tags: [
+    docker
+  ]

@@ -10,3 +10,9 @@
   become: true
   roles:
     - swarm
+
+- name: "Deploy Mattermost on Docker Swarm Cluster"
+  hosts: leaders
+  become: true
+  roles:
+    - mattermost
