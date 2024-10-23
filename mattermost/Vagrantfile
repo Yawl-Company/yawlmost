@@ -89,7 +89,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # We don't want to install Ansible on guest machines
         # so we're using plain ansible (not ansible_local)
         node.vm.provision "ansible" do |ansible|
-            ansible.compatibility_mode = "1.8"
+            ansible.compatibility_mode = "2.0"
             ansible.playbook = $playbook
             ansible.limit = "all"
             ansible.groups = {
