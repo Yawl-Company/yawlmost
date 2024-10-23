@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:13-alpine
     volumes:
-      - postgresql:/var/lib/postgresql/data
+      - mattermost-postgresql:/var/lib/postgresql/data
     environment:
       - TZ=UTC
       - POSTGRES_USER=mmuser
@@ -21,7 +21,12 @@ services:
       - "8443:8443/udp"
       - "8443:8443/tcp"
     volumes:
-      - mattermost:/mattermost/config:rw
+      - mattermost-config:/mattermost/config
+      - mattermost-data:/mattermost/data
+      - mattermost-logs:/mattermost/logs
+      - mattermost-plugins:/mattermost/plugins
+      - mattermost-client-plugins:/mattermost/client/plugins
+      - mattermost-bleve-indexes:/mattermost/bleve-indexes
     environment:
       - TZ=UTC
       - MM_SQLSETTINGS_DRIVERNAME=postgres
@@ -33,5 +38,10 @@ services:
         condition: on-failure
 
 volumes:
-  postgresql:
-  mattermost:
+  mattermost-postgresql:
+  mattermost-config:
+  mattermost-data:
+  mattermost-logs:
+  mattermost-plugins:
+  mattermost-client-plugins:
+  mattermost-bleve-indexes:
