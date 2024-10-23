@@ -18,15 +18,15 @@
     group: "2000"
     state: directory
 
+- name: Ensure mattermost directory exists
+  file:
+    path: /home/{{ ansible_user }}/mattermost
+    state: directory
+
 - name: Copy Docker Compose template
   template:
-    src: mattermost.yml
-    dest: /home/{{ ansible_user }}/mattermost/mattermost.yml
-
-- name: Copy environment variables template
-  template:
-    src: .env.j2
-    dest: /home/{{ ansible_user }}/mattermost/.env
+    src: docker-compose.yml
+    dest: /home/{{ ansible_user }}/mattermost/docker-compose.yml
 
 - name: Deploy Mattermost stack in Docker Swarm
-  command: docker stack deploy -c /home/{{ ansible_user }}/mattermost/mattermost.yml mattermost
+  command: docker stack deploy -c /home/{{ ansible_user }}/mattermost/docker-compose.yml mattermost

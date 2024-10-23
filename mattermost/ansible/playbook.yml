@@ -12,7 +12,7 @@
     - swarm
 
 - name: "Deploy Mattermost on Docker Swarm Cluster"
-  hosts: leaders
+  hosts: all
   become: true
   roles:
     - mattermost
