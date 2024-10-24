@@ -8,10 +8,13 @@
 
 - name: Remove old docker-py if it exists
   pip:
-    name: docker-py
+    name:
+      - docker-py
     state: absent
 
 - name: Ensure Docker SDK for Python is installed
   pip:
-    name: docker
+    name:
+      - docker
+      - jsondiff
     state: present

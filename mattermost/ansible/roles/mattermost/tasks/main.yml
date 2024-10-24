@@ -1,13 +1,17 @@
 ---
 - name: Ensure mattermost directory exists
   file:
-    path: "{{ stacks_directory }}/mattermost"
+    path: "{{ mattermost_directory }}"
     state: directory
 
 - name: Copy Docker Compose template
   template:
-    src: docker-compose.yml
-    dest: "{{ stacks_directory }}/mattermost/docker-compose.yml"
+    src: docker-stack.yml
+    dest: "{{ mattermost_stack_file }}"
 
-- name: Deploy Mattermost stack in Docker Swarm
-  command: "docker stack deploy --compose-file={{ stacks_directory }}/mattermost/docker-compose.yml mattermost"
+- name: Deploy or update Mattermost stack in Docker Swarm
+  community.docker.docker_stack:
+    name: mattermost
+    state: present
+    compose:
+      - "{{ mattermost_stack_file }}"

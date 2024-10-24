@@ -1,0 +1,2 @@
+mattermost_directory: "{{ stacks_directory }}/mattermost"
+mattermost_stack_file: "{{ mattermost_directory }}/docker-stack.yml"
