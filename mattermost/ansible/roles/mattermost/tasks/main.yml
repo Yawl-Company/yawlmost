@@ -4,6 +4,25 @@
     path: "{{ mattermost_directory }}"
     state: directory
 
+- name: Ensure Mattermost secrets exist
+  community.docker.docker_secret:
+    name: "{{ item.name }}"
+    data: "{{ item.value }}"
+    state: present
+  loop:
+    - {
+      name: mattermost_secret_postgresql_db,
+      value: "{{ mattermost_postgresql_db }}"
+    }
+    - {
+      name: mattermost_secret_postgresql_user,
+      value: "{{ mattermost_postgresql_user }}"
+    }
+    - {
+      name: mattermost_secret_postgresql_password,
+      value: "{{ mattermost_postgresql_password }}"
+    }
+
 - name: Copy Docker Compose template
   template:
     src: docker-stack.yml
