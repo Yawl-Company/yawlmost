@@ -1,19 +1,13 @@
-version: "3.8"
-
 services:
   postgres:
     image: postgres:13-alpine
     volumes:
       - mattermost-postgresql:/var/lib/postgresql/data
     environment:
-        TZ: "{{ timezone }}"
-        POSTGRES_DB: "{{ mattermost_postgresql_db }}"
-        POSTGRES_USER=: "{ mattermost_postgresql_user }}"
-        POSTGRES_PASSWORD: "{{ mattermost_postgresql_password }}"
-    secrets:
-      - mattermost_secret_postgresql_db
-      - mattermost_secret_postgresql_user
-      - mattermost_secret_postgresql_password
+        TZ: UTC
+        POSTGRES_USER: mmuser
+        POSTGRES_PASSWORD: mmuser_password
+        POSTGRES_DB: mattermost
     deploy:
       replicas: 1
       restart_policy:
@@ -35,15 +29,11 @@ services:
       - mattermost-client-plugins:/mattermost/client/plugins
       - mattermost-bleve-indexes:/mattermost/bleve-indexes
     environment:
-        TZ: "{{ timezone }}"
-        MM_SQLSETTINGS_DRIVERNAME: "{{ mm_sqlsettings_drivername }}"
-        MM_SQLSETTINGS_DATASOURCE: "{{ mm_sqlsettings_datastore }}"
-        MM_BLEVESETTINGS_INDEXDIR: "{{ mm_blevesettings_indexdir }}"
-        MM_SERVICESETTINGS_SITEURL: "{{ mm_servicesettings_siteurl }}"
-    secrets:
-      - mattermost_secret_postgresql_db
-      - mattermost_secret_postgresql_user
-      - mattermost_secret_postgresql_password
+        TZ: UTC
+        MM_SQLSETTINGS_DRIVERNAME: postgres
+        MM_SQLSETTINGS_DATASOURCE: postgres://mmuser:mmuser_password@postgres:5432/mattermost?sslmode=disable&connect_timeout=10
+        MM_BLEVESETTINGS_INDEXDIR: /mattermost/bleve-indexes
+        MM_SERVICESETTINGS_SITEURL: http://localhost
     deploy:
       replicas: 3
       restart_policy:
@@ -57,11 +47,3 @@ volumes:
   mattermost-plugins:
   mattermost-client-plugins:
   mattermost-bleve-indexes:
-
-secrets:
-  mattermost_secret_postgresql_db:
-    external: true
-  mattermost_secret_postgresql_user:
-    external: true
-  mattermost_secret_postgresql_password:
-    external: true
