@@ -3,6 +3,10 @@ services:
     image: postgres:13-alpine
     volumes:
       - mattermost-postgresql:/var/lib/postgresql/data
+    secrets:
+      - mattermost_secret_postgresql_db
+      - mattermost_secret_postgresql_user
+      - mattermost_secret_postgresql_password
     environment:
         TZ: "{{ timezone }}"
         POSTGRES_USER: "{{ mattermost_postgresql_user }}"
@@ -28,6 +32,10 @@ services:
       - mattermost-plugins:/mattermost/plugins
       - mattermost-client-plugins:/mattermost/client/plugins
       - mattermost-bleve-indexes:/mattermost/bleve-indexes
+    secrets:
+      - mattermost_secret_postgresql_db
+      - mattermost_secret_postgresql_user
+      - mattermost_secret_postgresql_password
     environment:
         TZ: "{{ timezone }}"
         MM_SQLSETTINGS_DRIVERNAME: "{{ mm_sqlsettings_drivername }}"
@@ -47,3 +55,11 @@ volumes:
   mattermost-plugins:
   mattermost-client-plugins:
   mattermost-bleve-indexes:
+
+secrets:
+  mattermost_secret_postgresql_db:
+    external: true
+  mattermost_secret_postgresql_user:
+    external: true
+  mattermost_secret_postgresql_password:
+    external: true
