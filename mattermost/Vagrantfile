@@ -8,6 +8,7 @@ $vm_memory = 2048
 $vm_cpus = 2
 
 # Ansible provision configuration
+$config_file = "ansible/ansible.cfg"
 $playbook = "ansible/playbook.yml"
 
 # We must use odd number of manager nodes
@@ -91,6 +92,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # so we're using plain ansible (not ansible_local)
         node.vm.provision "ansible" do |ansible|
             ansible.compatibility_mode = "2.0"
+            ansible.config_file = $config_file
             ansible.playbook = $playbook
             ansible.limit = "all"
             ansible.groups = {
