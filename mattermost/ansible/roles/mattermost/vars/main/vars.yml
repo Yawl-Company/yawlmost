@@ -13,6 +13,6 @@ mattermost_postgresql_password: "{{ vault_postgres_password }}"
 
 # mattermost service
 mm_sqlsettings_drivername: "postgres"
-mm_sqlsettings_datastore: "postgres://{{ mattermost_postgresql_user }}:{{ mattermost_postgresql_password }}@postgres:5432/{{ mattermost_postgresql_db }}?sslmode=disable&connect_timeout=10"
+mm_sqlsettings_datastore: "postgres://mmuser:mmuser_password@postgres:5432/mattermost?sslmode=disable&connect_timeout=10"
 mm_blevesettings_indexdir: "/mattermost/bleve-indexes"
 mm_servicesettings_siteurl: "http://localhost"
