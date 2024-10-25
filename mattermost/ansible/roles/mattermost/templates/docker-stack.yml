@@ -21,9 +21,6 @@ services:
         condition: any
         delay: 5s
         max_attempts: 5
-      placement:
-        constraints:
-          - node.role == manager
 
   mattermost:
     depends_on:
@@ -59,9 +56,6 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
-      placement:
-        constraints:
-          - node.role == worker
 
 volumes:
   mattermost-postgresql:
