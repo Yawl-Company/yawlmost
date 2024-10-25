@@ -13,6 +13,8 @@
     - { name: mattermost_secret_postgresql_db, value: "{{ mm_postgresql_db }}" }
     - { name: mattermost_secret_postgresql_user, value: "{{ mm_postgresql_user }}" }
     - { name: mattermost_secret_postgresql_password, value: "{{ mm_postgresql_password }}" }
+  no_log: true
+
 
 - name: Copy templates
   template:
