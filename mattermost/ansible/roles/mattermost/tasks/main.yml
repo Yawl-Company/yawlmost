@@ -1,7 +1,7 @@
 ---
 - name: Ensure mattermost directory exists
   file:
-    path: "{{ mattermost_directory }}"
+    path: "{{ mm_directory }}"
     state: directory
 
 - name: Ensure Mattermost secrets exist
@@ -12,25 +12,25 @@
   loop:
     - {
       name: mattermost_secret_postgresql_db,
-      value: "{{ mattermost_postgresql_db }}"
+      value: "{{ mm_postgresql_db }}"
     }
     - {
       name: mattermost_secret_postgresql_user,
-      value: "{{ mattermost_postgresql_user }}"
+      value: "{{ mm_postgresql_user }}"
     }
     - {
       name: mattermost_secret_postgresql_password,
-      value: "{{ mattermost_postgresql_password }}"
+      value: "{{ mm_postgresql_password }}"
     }
 
 - name: Copy Docker Compose template
   template:
     src: docker-stack.yml
-    dest: "{{ mattermost_stack_file }}"
+    dest: "{{ mm_stack_file }}"
 
 - name: Deploy or update Mattermost stack in Docker Swarm
   community.docker.docker_stack:
     name: mattermost
     state: present
     compose:
-      - "{{ mattermost_stack_file }}"
+      - "{{ mm_stack_file }}"

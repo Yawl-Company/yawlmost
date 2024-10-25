@@ -1,18 +1,18 @@
 ---
 # deploy
-mattermost_directory: "{{ stacks_directory }}/mattermost"
-mattermost_stack_file: "{{ mattermost_directory }}/docker-stack.yml"
+mm_directory: "{{ stacks_directory }}/mattermost"
+mm_stack_file: "{{ mm_directory }}/docker-stack.yml"
 
 # general
 timezone: "UTC"
 
 # postgresql service
-mattermost_postgresql_db: "{{ vault_postgres_db }}"
-mattermost_postgresql_user: "{{ vault_postgres_user }}"
-mattermost_postgresql_password: "{{ vault_postgres_password }}"
+mm_postgresql_db: "{{ vault_postgres_db }}"
+mm_postgresql_user: "{{ vault_postgres_user }}"
+mm_postgresql_password: "{{ vault_postgres_password }}"
 
 # mattermost service
 mm_sqlsettings_drivername: "postgres"
-mm_sqlsettings_datastore: "postgres://mmuser:mmuser_password@postgres:5432/mattermost?sslmode=disable&connect_timeout=10"
+mm_sqlsettings_datasource: "postgres://{{ mm_postgresql_user }}:{{ mm_postgresql_password }}@postgres:5432/{{ mm_postgresql_db }}?sslmode=disable&connect_timeout=10"
 mm_blevesettings_indexdir: "/mattermost/bleve-indexes"
 mm_servicesettings_siteurl: "http://localhost"
