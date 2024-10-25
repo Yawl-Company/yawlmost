@@ -1,7 +1,11 @@
 ---
 # deploy
-mm_directory: "{{ stacks_directory }}/mattermost"
+mm_stack_name: "yawlmost"
+mm_directory: "{{ stacks_directory }}/{{ mm_stack_name }}"
 mm_stack_file: "{{ mm_directory }}/docker-stack.yml"
+# build
+mm_docker_file: "{{ mm_directory }}/Dockerfile"
+mm_entrypoint_wrapper_file: "{{ mm_directory }}/entrypoint-wrapper.sh"
 
 # general
 timezone: "UTC"
@@ -13,6 +17,5 @@ mm_postgresql_password: "{{ vault_postgres_password }}"
 
 # mattermost service
 mm_sqlsettings_drivername: "postgres"
-mm_sqlsettings_datasource: "postgres://{{ mm_postgresql_user }}:{{ mm_postgresql_password }}@postgres:5432/{{ mm_postgresql_db }}?sslmode=disable&connect_timeout=10"
 mm_blevesettings_indexdir: "/mattermost/bleve-indexes"
 mm_servicesettings_siteurl: "http://localhost"

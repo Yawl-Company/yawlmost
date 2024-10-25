@@ -20,7 +20,7 @@ services:
   mattermost:
     depends_on:
       - postgres
-    image: ghcr.io/this-is-tobi/mirror/mattermost
+    image: mattermost:latest
     ports:
       - "8065:8065"
       - "8443:8443/udp"
@@ -39,7 +39,6 @@ services:
     environment:
         TZ: "{{ timezone }}"
         MM_SQLSETTINGS_DRIVERNAME: "{{ mm_sqlsettings_drivername }}"
-        MM_SQLSETTINGS_DATASOURCE: "{{ mm_sqlsettings_datasource }}"
         MM_BLEVESETTINGS_INDEXDIR: "{{ mm_blevesettings_indexdir }}"
         MM_SERVICESETTINGS_SITEURL: "{{ mm_servicesettings_siteurl }}"
     deploy:

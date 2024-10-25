@@ -10,27 +10,30 @@
     data: "{{ item.value }}"
     state: present
   loop:
-    - {
-      name: mattermost_secret_postgresql_db,
-      value: "{{ mm_postgresql_db }}"
-    }
-    - {
-      name: mattermost_secret_postgresql_user,
-      value: "{{ mm_postgresql_user }}"
-    }
-    - {
-      name: mattermost_secret_postgresql_password,
-      value: "{{ mm_postgresql_password }}"
-    }
+    - { name: mattermost_secret_postgresql_db, value: "{{ mm_postgresql_db }}" }
+    - { name: mattermost_secret_postgresql_user, value: "{{ mm_postgresql_user }}" }
+    - { name: mattermost_secret_postgresql_password, value: "{{ mm_postgresql_password }}" }
 
-- name: Copy Docker Compose template
+- name: Copy templates
   template:
-    src: docker-stack.yml
-    dest: "{{ mm_stack_file }}"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: docker-stack.yml, dest: '{{ mm_stack_file }}' }
+    - { src: Dockerfile, dest: '{{ mm_docker_file }}' }
+    - { src: entrypoint-wrapper.sh, dest: '{{ mm_entrypoint_wrapper_file }}' }
+
+- name: Build patched Docker image
+  community.docker.docker_image:
+    name: mattermost:latest
+    build:
+      path: "{{ mm_directory }}"
+    state: present
+    source: build
 
 - name: Deploy or update Mattermost stack in Docker Swarm
   community.docker.docker_stack:
-    name: mattermost
+    name: "{{ mm_stack_name }}"
     state: present
     compose:
       - "{{ mm_stack_file }}"
