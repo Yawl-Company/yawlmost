@@ -15,7 +15,6 @@
     - { name: mattermost_secret_postgresql_password, value: "{{ mm_postgresql_password }}" }
   no_log: true
 
-
 - name: Copy templates
   template:
     src: "{{ item.src }}"
