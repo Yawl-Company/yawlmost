@@ -32,6 +32,10 @@ services:
       - mattermost-plugins:/mattermost/plugins
       - mattermost-client-plugins:/mattermost/client/plugins
       - mattermost-bleve-indexes:/mattermost/bleve-indexes
+    secrets:
+      - mattermost_secret_postgresql_db
+      - mattermost_secret_postgresql_user
+      - mattermost_secret_postgresql_password
     environment:
         TZ: "{{ timezone }}"
         MM_SQLSETTINGS_DRIVERNAME: "{{ mm_sqlsettings_drivername }}"
