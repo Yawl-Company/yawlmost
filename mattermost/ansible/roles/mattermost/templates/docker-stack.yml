@@ -9,9 +9,9 @@ services:
       - mattermost_secret_postgresql_password
     environment:
         TZ: "{{ timezone }}"
-        POSTGRES_USER: "{{ mattermost_postgresql_user }}"
-        POSTGRES_PASSWORD: "{{ mattermost_postgresql_password }}"
-        POSTGRES_DB: "{{ mattermost_postgresql_db }}"
+        POSTGRES_USER_FILE: /run/secrets/mattermost_secret_postgresql_user
+        POSTGRES_PASSWORD_FILE: /run/secrets/mattermost_secret_postgresql_password
+        POSTGRES_DB_FILE: /run/secrets/mattermost_secret_postgresql_db
     deploy:
       replicas: 1
       restart_policy:
