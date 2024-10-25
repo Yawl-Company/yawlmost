@@ -21,16 +21,6 @@
     dest: "{{ item.dest }}"
   loop:
     - { src: docker-stack.yml, dest: '{{ mm_stack_file }}' }
-    - { src: Dockerfile.j2, dest: '{{ mm_docker_file }}' }
-    - { src: entrypoint-wrapper.sh.j2, dest: '{{ mm_entrypoint_wrapper_file }}' }
-
-- name: Build patched Docker image
-  community.docker.docker_image:
-    name: mattermost:latest
-    build:
-      path: "{{ mm_directory }}"
-    state: present
-    source: build
 
 - name: Deploy or update Mattermost stack in Docker Swarm
   community.docker.docker_stack:

@@ -14,13 +14,21 @@ services:
         POSTGRES_DB_FILE: /run/secrets/mattermost_secret_postgresql_db
     deploy:
       replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
       restart_policy:
-        condition: on-failure
+        condition: any
+        delay: 5s
+        max_attempts: 5
+      placement:
+        constraints:
+          - node.role == manager
 
   mattermost:
     depends_on:
       - postgres
-    image: mattermost:latest
+    image: ghcr.io/yawl-company/yawlmost-image/yawlmost
     ports:
       - "8065:8065"
       - "8443:8443/udp"
@@ -43,8 +51,17 @@ services:
         MM_SERVICESETTINGS_SITEURL: "{{ mm_servicesettings_siteurl }}"
     deploy:
       replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
       restart_policy:
         condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      placement:
+        constraints:
+          - node.role == worker
 
 volumes:
   mattermost-postgresql:

@@ -3,9 +3,6 @@
 mm_stack_name: "yawlmost"
 mm_directory: "{{ stacks_directory }}/{{ mm_stack_name }}"
 mm_stack_file: "{{ mm_directory }}/docker-stack.yml"
-# build
-mm_docker_file: "{{ mm_directory }}/Dockerfile"
-mm_entrypoint_wrapper_file: "{{ mm_directory }}/entrypoint-wrapper.sh"
 
 # general
 timezone: "UTC"
