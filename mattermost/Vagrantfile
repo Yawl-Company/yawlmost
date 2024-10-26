@@ -66,10 +66,6 @@ def configure_machine_node(config, machine, node)
 end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    # Workaround for "SSH connection was unexpectedly closed by the remote end"
-    # See: https://github.com/hashicorp/vagrant/issues/7681
-    config.ssh.keep_alive = true
-
     # Configure manager machines
     managers.each do |machine|
         config.vm.define machine[:hostname] do |node|
