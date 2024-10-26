@@ -66,21 +66,12 @@ def configure_machine_node(config, machine, node)
 end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    # Configure manager machines
-    managers.each do |machine|
+    [*managers, *workers].each do |machine|
         config.vm.define machine[:hostname] do |node|
             configure_machine_node(config, machine, node)
         end
     end
 
-    # Configure worker machines
-    workers.each_with_index do |machine, index|
-        config.vm.define machine[:hostname] do |node|
-            configure_machine_node(config, machine, node)
-        end
-    end
-
-    # Configure leader-manager machine
     config.vm.define leader[:hostname] do |node|
         configure_machine_node(config, leader, node)
         node.vm.network "forwarded_port", guest: 8065, host: 8065
