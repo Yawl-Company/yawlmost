@@ -24,19 +24,17 @@ This project leverages VMware as the provider for creating a robust and scalable
 
 ### 🔧 Installation Steps
 
-1. **Clone the repository**:
-
-   ```bash
-   git clone git@github.com:Yawl-Company/yawlmost.git
-   cd yawlmost/mattermost
-   ```
+1. **Clone the repository:**
+```shell
+git clone git@github.com:Yawl-Company/yawlmost.git
+cd yawlmost/mattermost
+```
+2. **Start the Vagrant environment:**
+```shell
+vagrant up
+```
    
-2.	Start the Vagrant environment:
-   ```bash
-   vagrant up
-   ```
-
- Once the setup is complete, Mattermost will be accessible at http://localhost:8065.
+Once the setup is complete, Mattermost will be accessible at http://localhost:8065.
 
 ## 🔧 Development Setup
 
