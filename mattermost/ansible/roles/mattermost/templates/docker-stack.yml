@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:13-alpine
+    volumes:
+      - mattermost-postgresql:/var/lib/postgresql/data
+    secrets:
+      - mattermost_secret_postgresql_db
+      - mattermost_secret_postgresql_user
+      - mattermost_secret_postgresql_password
+    environment:
+        TZ: "{{ timezone }}"
+        POSTGRES_USER_FILE: /run/secrets/mattermost_secret_postgresql_user
+        POSTGRES_PASSWORD_FILE: /run/secrets/mattermost_secret_postgresql_password
+        POSTGRES_DB_FILE: /run/secrets/mattermost_secret_postgresql_db
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 5
+
+  mattermost:
+    depends_on:
+      - postgres
+    image: ghcr.io/yawl-company/yawlmost-image/yawlmost
+    ports:
+      - "8065:8065"
+      - "8443:8443/udp"
+      - "8443:8443/tcp"
+    volumes:
+      - mattermost-config:/mattermost/config
+      - mattermost-data:/mattermost/data
+      - mattermost-logs:/mattermost/logs
+      - mattermost-plugins:/mattermost/plugins
+      - mattermost-client-plugins:/mattermost/client/plugins
+      - mattermost-bleve-indexes:/mattermost/bleve-indexes
+    secrets:
+      - mattermost_secret_postgresql_db
+      - mattermost_secret_postgresql_user
+      - mattermost_secret_postgresql_password
+    environment:
+        TZ: "{{ timezone }}"
+        MM_SQLSETTINGS_DRIVERNAME: "{{ mm_sqlsettings_drivername }}"
+        MM_BLEVESETTINGS_INDEXDIR: "{{ mm_blevesettings_indexdir }}"
+        MM_SERVICESETTINGS_SITEURL: "{{ mm_servicesettings_siteurl }}"
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+volumes:
+  mattermost-postgresql:
+  mattermost-config:
+  mattermost-data:
+  mattermost-logs:
+  mattermost-plugins:
+  mattermost-client-plugins:
+  mattermost-bleve-indexes:
+
+secrets:
+  mattermost_secret_postgresql_db:
+    external: true
+  mattermost_secret_postgresql_user:
+    external: true
+  mattermost_secret_postgresql_password:
+    external: true
