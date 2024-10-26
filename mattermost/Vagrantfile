@@ -104,10 +104,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                     |worker| worker[:hostname]
                 },
             }
-            # Explicitly specify python3 interpreter
-            ansible.extra_vars = {
-                ansible_python_interpreter: "/usr/bin/python3"
-            }
         end
     end
 end

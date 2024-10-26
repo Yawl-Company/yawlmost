@@ -1,21 +1,21 @@
 ---
-#- name: "Install Docker on all hosts"
-#  hosts: all
-#  become: true
-#  roles:
-#    - docker
-#
-#- name: "Setup Docker Swarm"
-#  hosts: all
-#  become: true
-#  roles:
-#    - swarm
-#
-#- name: "Deploy Portainer"
-#  hosts: leaders
-#  become: true
-#  roles:
-#    - portainer
+- name: "Install Docker on all hosts"
+  hosts: all
+  become: true
+  roles:
+    - docker
+
+- name: "Setup Docker Swarm"
+  hosts: all
+  become: true
+  roles:
+    - swarm
+
+- name: "Deploy Portainer"
+  hosts: leaders
+  become: true
+  roles:
+    - portainer
 
 - name: "Deploy Mattermost on Docker Swarm Cluster"
   hosts: leaders
