@@ -3,40 +3,40 @@ VAGRANTFILE_API_VERSION = "2"
 
 # Core machines configuration
 # See: https://docs.mattermost.com/install/install-ubuntu.html
-$box = "bento/ubuntu-20.04-arm64"
-$vm_memory = 2048
-$vm_cpus = 2
+box = "bento/ubuntu-20.04-arm64"
+vm_memory = 2048
+vm_cpus = 2
 
 # Ansible provision configuration
-$config_file = "ansible/ansible.cfg"
-$playbook = "ansible/playbook.yml"
+config_file = "ansible/ansible.cfg"
+playbook = "ansible/playbook.yml"
 
 # Cluster configuration
-NUM_MANAGERS = 3
-NUM_WORKERS = 2
+managers_number = 3
+workers_number = 2
 
 leader = {
     :hostname => "leader",
-    :box => $box,
-    :ram => $vm_memory,
-    :cpu => $vm_cpus
+    :box => box,
+    :ram => vm_memory,
+    :cpu => vm_cpus
 }
 
-managers = Array.new(NUM_MANAGERS - 1) do |i|
+managers = Array.new(managers_number - 1) do |i|
   {
     :hostname => "manager-#{i + 1}",
-    :box => $box,
-    :ram => $vm_memory,
-    :cpu => $vm_cpus
+    :box => box,
+    :ram => vm_memory,
+    :cpu => vm_cpus
   }
 end
 
-workers = Array.new(NUM_WORKERS) do |i|
+workers = Array.new(workers_number) do |i|
   {
     :hostname => "worker-#{i + 1}",
-    :box => $box,
-    :ram => $vm_memory,
-    :cpu => $vm_cpus
+    :box => box,
+    :ram => vm_memory,
+    :cpu => vm_cpus
   }
 end
 
@@ -68,8 +68,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         node.vm.provision "ansible" do |ansible|
             ansible.compatibility_mode = "2.0"
-            ansible.config_file = $config_file
-            ansible.playbook = $playbook
+            ansible.config_file = config_file
+            ansible.playbook = playbook
             ansible.limit = "all"
             ansible.groups = {
                 "leaders" => [leader[:hostname]],
