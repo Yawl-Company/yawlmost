@@ -76,7 +76,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 "managers" => managers.map {
                     |manager| manager[:hostname]
                 },
-                "workers"  => workers.map {
+                "workers" => workers.map {
                     |worker| worker[:hostname]
                 },
             }
