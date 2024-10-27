@@ -1,3 +1,4 @@
+---
 - name: Ensure portainer directory exists
   file:
     path: "{{ portainer_directory }}"
