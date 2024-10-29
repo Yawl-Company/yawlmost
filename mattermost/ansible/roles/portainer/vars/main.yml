@@ -1,3 +1,4 @@
 ---
-portainer_directory: "{{ stacks_directory }}/portainer"
+portainer_stack_name: "portainer"
+portainer_directory: "{{ stacks_directory }}/{{ portainer_stack_name }}"
 portainer_stack_file: "{{ portainer_directory }}/docker-stack.yml"
