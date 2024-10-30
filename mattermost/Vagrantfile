@@ -63,7 +63,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define leader[:hostname] do |node|
         configure_machine_node(config, leader, node)
 
-        node.vm.network "forwarded_port", guest: 80, host: 8080
+        node.vm.network "forwarded_port", guest: 80, host: 80
         node.vm.network "forwarded_port", guest: 9000, host: 9000
 
         node.vm.provision "ansible" do |ansible|
