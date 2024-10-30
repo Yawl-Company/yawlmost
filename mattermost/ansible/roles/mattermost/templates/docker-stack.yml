@@ -54,6 +54,9 @@ services:
     networks:
       - mattermost-network
     deploy:
+      placement:
+        constraints:
+          - node.labels.proxy != true
       replicas: 1
       update_config:
         parallelism: 1
@@ -87,6 +90,9 @@ services:
       - mattermost-network
       - proxy-network
     deploy:
+      placement:
+        constraints:
+          - node.labels.proxy != true
       replicas: 3
       update_config:
         parallelism: 1
