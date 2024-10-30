@@ -4,11 +4,12 @@ global:
 
 api:
   dashboard: true
-  insecure: true
 
 entryPoints:
   web:
     address: ":80"
+  websecure:
+    address: ":443"
 
 log:
   level: DEBUG
