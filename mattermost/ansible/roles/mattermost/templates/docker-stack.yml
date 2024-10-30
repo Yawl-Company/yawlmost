@@ -57,6 +57,7 @@ services:
       restart_policy:
         condition: on-failure
       labels:
+        # core
         - traefik.enable=true
         - traefik.docker.network={{ external_network_name }}
         # http
