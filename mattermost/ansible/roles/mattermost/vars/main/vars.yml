@@ -14,3 +14,6 @@ mm_postgresql_password: "{{ vault_postgres_password }}"
 mm_sqlsettings_drivername: "postgres"
 mm_blevesettings_indexdir: "/mattermost/bleve-indexes"
 mm_servicesettings_siteurl: "http://localhost"
+
+# cloudflare
+mm_cloudflare_dns_api_token: "{{ vault_cloudflare_dns_api_token }}"
