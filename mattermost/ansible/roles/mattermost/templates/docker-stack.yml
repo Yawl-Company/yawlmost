@@ -30,8 +30,8 @@ secrets:
     external: true
 
 services:
-  proxy:
-    image: traefik:latest
+  traefik:
+    image: "{{ traefik_image }}"
     ports:
       - "80:80"
       - "443:443"
@@ -62,15 +62,15 @@ services:
         - traefik.docker.network={{ external_network_name }}
         # http
         - traefik.http.routers.traefik.entrypoints=web_insecure
-        - traefik.http.routers.traefik.rule=Host(`{{ proxy_route }}`)
+        - traefik.http.routers.traefik.rule=Host(`{{ traefik_http_route }}`)
         - traefik.http.routers.traefik.service=api@internal
         # core
         - traefik.http.services.traefik.loadbalancer.server.port=8080
 
   postgres:
     depends_on:
-      - proxy
-    image: postgres:13-alpine
+      - traefik
+    image: "{{ postgresql_image }}"
     volumes:
       - mattermost-postgresql:/var/lib/postgresql/data
     secrets:
@@ -99,7 +99,7 @@ services:
   mattermost:
     depends_on:
       - postgres
-    image: ghcr.io/yawl-company/yawlmost-image/yawlmost
+    image: "{{ mattermost_image }}"
     volumes:
       - mattermost-config:/mattermost/config
       - mattermost-data:/mattermost/data

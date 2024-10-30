@@ -1,12 +1,17 @@
 ---
+# general
 timezone: "UTC"
 
-external_network_name: "external_network"
-internal_network_name: "internal_network"
+# images
+mattermost_image: "ghcr.io/yawl-company/yawlmost-image/yawlmost"
+postgresql_image: "postgres:13-alpine"
+traefik_image: "traefik:latest"
 
-proxy_route: "traefik.localhost"
+# routes
+traefik_http_route: "traefik.localhost"
 mattermost_http_route: "mattermost.localhost"
 mattermost_https_route: "mattermost.yawlco.tech"
 
+# hosting
 yawl_owner_mail: "bobniklv@gmail.com"
 yawl_domain: "yawlco.tech"
