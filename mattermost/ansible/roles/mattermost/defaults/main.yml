@@ -1,2 +1,8 @@
 ---
 timezone: "UTC"
+
+external_network_name: "external_network"
+internal_network_name: "internal_network"
+
+proxy_route: "traefik.localhost"
+mattermost_route: "mattermost.localhost"

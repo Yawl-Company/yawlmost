@@ -1,14 +1,31 @@
 version: '3.8'
 
 networks:
-  mattermost-network:
+  internal-network:
     driver: overlay
     internal: true
-    name: "mattermost-network"
-  proxy-network:
+    name: "{{ internal_network_name }}"
+  external-network:
     driver: overlay
     internal: false
-    name: "proxy-network"
+    name: "{{ external_network_name }}"
+
+volumes:
+  mattermost-postgresql:
+  mattermost-config:
+  mattermost-data:
+  mattermost-logs:
+  mattermost-plugins:
+  mattermost-client-plugins:
+  mattermost-bleve-indexes:
+
+secrets:
+  mattermost_secret_postgresql_db:
+    external: true
+  mattermost_secret_postgresql_user:
+    external: true
+  mattermost_secret_postgresql_password:
+    external: true
 
 services:
   proxy:
@@ -21,7 +38,7 @@ services:
     environment:
       TZ: "{{ timezone }}"
     networks:
-      - proxy-network
+      - external-network
     deploy:
       placement:
         constraints:
@@ -30,8 +47,8 @@ services:
         condition: on-failure
       labels:
         - traefik.enable=true
-        - traefik.http.routers.traefik.rule=Host(`traefik.localhost`)
-        - traefik.docker.network=proxy-network
+        - traefik.http.routers.traefik.rule=Host(`{{ proxy_route }}`)
+        - traefik.docker.network={{ external_network_name }}
         - traefik.http.routers.traefik.service=api@internal
         - traefik.http.routers.traefik.entrypoints=web
         - traefik.http.services.traefik.loadbalancer.server.port=8080
@@ -47,23 +64,22 @@ services:
       - mattermost_secret_postgresql_user
       - mattermost_secret_postgresql_password
     environment:
-        TZ: "{{ timezone }}"
-        POSTGRES_USER_FILE: /run/secrets/mattermost_secret_postgresql_user
-        POSTGRES_PASSWORD_FILE: /run/secrets/mattermost_secret_postgresql_password
-        POSTGRES_DB_FILE: /run/secrets/mattermost_secret_postgresql_db
+      TZ: "{{ timezone }}"
+      POSTGRES_USER_FILE: /run/secrets/mattermost_secret_postgresql_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/mattermost_secret_postgresql_password
+      POSTGRES_DB_FILE: /run/secrets/mattermost_secret_postgresql_db
     networks:
-      - mattermost-network
+      - internal-network
     deploy:
+      replicas: 1
       placement:
         constraints:
           - node.labels.proxy != true
-      replicas: 1
       update_config:
         parallelism: 1
-        delay: 10s
+        order: stop-first
       restart_policy:
         condition: any
-        delay: 5s
         max_attempts: 5
 
   mattermost:
@@ -82,47 +98,28 @@ services:
       - mattermost_secret_postgresql_user
       - mattermost_secret_postgresql_password
     environment:
-        TZ: "{{ timezone }}"
-        MM_SQLSETTINGS_DRIVERNAME: "{{ mm_sqlsettings_drivername }}"
-        MM_BLEVESETTINGS_INDEXDIR: "{{ mm_blevesettings_indexdir }}"
-        MM_SERVICESETTINGS_SITEURL: "{{ mm_servicesettings_siteurl }}"
+      TZ: "{{ timezone }}"
+      MM_SQLSETTINGS_DRIVERNAME: "{{ mm_sqlsettings_drivername }}"
+      MM_BLEVESETTINGS_INDEXDIR: "{{ mm_blevesettings_indexdir }}"
+      MM_SERVICESETTINGS_SITEURL: "{{ mm_servicesettings_siteurl }}"
     networks:
-      - mattermost-network
-      - proxy-network
+      - internal-network
+      - external-network
     deploy:
+      replicas: 3
       placement:
         constraints:
           - node.labels.proxy != true
-      replicas: 3
       update_config:
         parallelism: 1
-        delay: 10s
         order: start-first
       restart_policy:
         condition: on-failure
-        delay: 5s
         max_attempts: 3
       labels:
         - traefik.enable=true
-        - traefik.http.routers.mattermost.rule=Host(`mattermost.localhost`)
-        - traefik.docker.network=proxy-network
+        - traefik.http.routers.mattermost.rule=Host(`{{ mattermost_route }}`)
+        - traefik.docker.network={{ external_network_name }}
         - traefik.http.routers.mattermost.service=mattermost
         - traefik.http.routers.mattermost.entrypoints=web
         - traefik.http.services.mattermost.loadbalancer.server.port=8065
-
-volumes:
-  mattermost-postgresql:
-  mattermost-config:
-  mattermost-data:
-  mattermost-logs:
-  mattermost-plugins:
-  mattermost-client-plugins:
-  mattermost-bleve-indexes:
-
-secrets:
-  mattermost_secret_postgresql_db:
-    external: true
-  mattermost_secret_postgresql_user:
-    external: true
-  mattermost_secret_postgresql_password:
-    external: true
