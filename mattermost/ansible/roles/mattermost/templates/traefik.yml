@@ -6,13 +6,23 @@ api:
   dashboard: true
 
 entryPoints:
-  web:
+  web_insecure:
     address: ":80"
-  websecure:
+  web_secure:
     address: ":443"
 
-log:
-  level: DEBUG
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: "yawl.foss@gmail.com"
+      storage: /var/traefik/certs/cloudflare-acme.json
+      caServer: 'https://acme-staging-v02.api.letsencrypt.org/'
+      keyType: EC256
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - 8.8.8.8:53
+        delayBeforeCheck: 90
 
 providers:
   swarm:

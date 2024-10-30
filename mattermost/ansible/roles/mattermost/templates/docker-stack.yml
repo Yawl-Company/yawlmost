@@ -57,10 +57,12 @@ services:
         condition: on-failure
       labels:
         - traefik.enable=true
-        - traefik.http.routers.traefik.rule=Host(`{{ proxy_route }}`)
         - traefik.docker.network={{ external_network_name }}
+        # http
+        - traefik.http.routers.traefik.rule=Host(`{{ proxy_route }}`)
+        - traefik.http.routers.traefik.entrypoints=web_insecure
         - traefik.http.routers.traefik.service=api@internal
-        - traefik.http.routers.traefik.entrypoints=web
+        # core
         - traefik.http.services.traefik.loadbalancer.server.port=8080
 
   postgres:
@@ -128,8 +130,9 @@ services:
         max_attempts: 2
       labels:
         - traefik.enable=true
-        - traefik.http.routers.mattermost.rule=Host(`{{ mattermost_route }}`)
         - traefik.docker.network={{ external_network_name }}
-        - traefik.http.routers.mattermost.service=mattermost
-        - traefik.http.routers.mattermost.entrypoints=web
+        # http
+        - traefik.http.routers.mattermost.rule=Host(`{{ mattermost_route }}`)
+        - traefik.http.routers.mattermost.entrypoints=web_insecure
+        # core
         - traefik.http.services.mattermost.loadbalancer.server.port=8065
