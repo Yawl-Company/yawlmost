@@ -36,8 +36,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./:/certs/
     secrets:
       - cloudflare_dns_api_token
     environment:
@@ -59,8 +60,8 @@ services:
         - traefik.enable=true
         - traefik.docker.network={{ external_network_name }}
         # http
-        - traefik.http.routers.traefik.rule=Host(`{{ proxy_route }}`)
         - traefik.http.routers.traefik.entrypoints=web_insecure
+        - traefik.http.routers.traefik.rule=Host(`{{ proxy_route }}`)
         - traefik.http.routers.traefik.service=api@internal
         # core
         - traefik.http.services.traefik.loadbalancer.server.port=8080
@@ -129,10 +130,20 @@ services:
         condition: on-failure
         max_attempts: 2
       labels:
+        # core
         - traefik.enable=true
         - traefik.docker.network={{ external_network_name }}
-        # http
-        - traefik.http.routers.mattermost.rule=Host(`{{ mattermost_route }}`)
-        - traefik.http.routers.mattermost.entrypoints=web_insecure
-        # core
         - traefik.http.services.mattermost.loadbalancer.server.port=8065
+        # http
+        - traefik.http.routers.mattermost.entrypoints=web_insecure
+        - traefik.http.routers.mattermost.rule=Host(`{{ mattermost_http_route }}`)
+        # http -> https bridge
+        - traefik.http.routers.mattermost.middlewares=https_redirect
+        - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
+        # https
+        - traefik.http.routers.mattermost-secure.entrypoints=web_secure
+        - traefik.http.routers.mattermost-secure.rule=Host(`{{ mattermost_https_route }}`)
+        - traefik.http.routers.mattermost-secure.tls=true
+        - traefik.http.routers.mattermost-secure.tls.certresolver=cloudflare
+        - traefik.http.routers.mattermost-secure.tls.domains[0].main={{ yawl_domain }}
+        - traefik.http.routers.mattermost-secure.tls.domains[0].sans=*.{{ yawl_domain }}

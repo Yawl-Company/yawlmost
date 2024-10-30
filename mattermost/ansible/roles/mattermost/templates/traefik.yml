@@ -14,15 +14,14 @@ entryPoints:
 certificatesResolvers:
   cloudflare:
     acme:
-      email: "yawl.foss@gmail.com"
-      storage: /var/traefik/certs/cloudflare-acme.json
-      caServer: 'https://acme-staging-v02.api.letsencrypt.org/'
-      keyType: EC256
+      email: "{{ yawl_owner_mail }}"
+      storage: /certs/acme.json
       dnsChallenge:
         provider: cloudflare
         resolvers:
-          - 8.8.8.8:53
-        delayBeforeCheck: 90
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
+        delayBeforeCheck: 90s
 
 providers:
   swarm:

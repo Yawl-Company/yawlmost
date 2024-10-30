@@ -5,4 +5,8 @@ external_network_name: "external_network"
 internal_network_name: "internal_network"
 
 proxy_route: "traefik.localhost"
-mattermost_route: "mattermost.localhost"
+mattermost_http_route: "mattermost.localhost"
+mattermost_https_route: "mattermost.yawlco.tech"
+
+yawl_owner_mail: "bobniklv@gmail.com"
+yawl_domain: "yawlco.tech"
