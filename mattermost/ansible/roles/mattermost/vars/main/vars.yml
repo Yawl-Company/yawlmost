@@ -3,6 +3,7 @@
 mm_stack_name: "yawlmost"
 mm_directory: "{{ stacks_directory }}/{{ mm_stack_name }}"
 mm_stack_file: "{{ mm_directory }}/docker-stack.yml"
+mm_proxy_config_file: "{{ mm_directory }}/traefik.yml"
 
 # postgresql service
 mm_postgresql_db: "{{ vault_postgres_db }}"

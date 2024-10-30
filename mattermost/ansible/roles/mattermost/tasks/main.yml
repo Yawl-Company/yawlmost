@@ -21,6 +21,7 @@
     dest: "{{ item.dest }}"
   loop:
     - { src: docker-stack.yml, dest: '{{ mm_stack_file }}' }
+    - { src: traefik.yml, dest: '{{ mm_proxy_config_file }}' }
 
 - name: Deploy or update Mattermost stack in Docker Swarm
   community.docker.docker_stack:
