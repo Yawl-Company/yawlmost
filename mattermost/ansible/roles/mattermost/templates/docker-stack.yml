@@ -15,7 +15,6 @@ services:
     image: traefik:latest
     ports:
       - "80:80"
-      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
@@ -29,6 +28,13 @@ services:
           - node.labels.proxy == true
       restart_policy:
         condition: on-failure
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.traefik.rule=Host(`traefik.localhost`)
+        - traefik.docker.network=proxy-network
+        - traefik.http.routers.traefik.service=api@internal
+        - traefik.http.routers.traefik.entrypoints=web
+        - traefik.http.services.traefik.loadbalancer.server.port=8080
 
   postgres:
     depends_on:
@@ -92,7 +98,7 @@ services:
         max_attempts: 3
       labels:
         - traefik.enable=true
-        - traefik.http.routers.mattermost.rule=Host(`localhost`)
+        - traefik.http.routers.mattermost.rule=Host(`mattermost.localhost`)
         - traefik.docker.network=proxy-network
         - traefik.http.routers.mattermost.service=mattermost
         - traefik.http.routers.mattermost.entrypoints=web
