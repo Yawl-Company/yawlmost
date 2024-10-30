@@ -40,9 +40,13 @@ services:
     networks:
       - external-network
     deploy:
+      replicas: 1
       placement:
         constraints:
           - node.labels.proxy == true
+      update_config:
+        parallelism: 1
+        order: start-first
       restart_policy:
         condition: on-failure
       labels:
@@ -79,8 +83,8 @@ services:
         parallelism: 1
         order: stop-first
       restart_policy:
-        condition: any
-        max_attempts: 5
+        condition: on-failure
+        max_attempts: 2
 
   mattermost:
     depends_on:
@@ -111,11 +115,11 @@ services:
         constraints:
           - node.labels.proxy != true
       update_config:
-        parallelism: 1
+        parallelism: 2
         order: start-first
       restart_policy:
         condition: on-failure
-        max_attempts: 3
+        max_attempts: 2
       labels:
         - traefik.enable=true
         - traefik.http.routers.mattermost.rule=Host(`{{ mattermost_route }}`)
