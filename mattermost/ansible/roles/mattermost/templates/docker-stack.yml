@@ -46,6 +46,9 @@ services:
       CF_DNS_API_TOKEN_FILE: /run/secrets/cloudflare_dns_api_token
     networks:
       - external-network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
     deploy:
       replicas: 1
       placement:
