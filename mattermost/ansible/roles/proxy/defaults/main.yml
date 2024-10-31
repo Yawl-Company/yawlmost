@@ -8,4 +8,4 @@ traefik_http_route: "{{ service_name }}.{{ localhost }}"
 traefik_https_route: "{{ service_name }}.{{ domain_name }}"
 
 # hosting
-domain_owner_mail: "bobniklv@gmail.com"
+domain_owner_mail: "{{ vault_cloudflare_owner_mail }}"
