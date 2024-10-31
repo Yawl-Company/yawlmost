@@ -8,4 +8,4 @@ public_network_name: "public_network"
 
 # hosting
 localhost: "localhost"
-domain_name: "yawlco.tech"
+domain_name: "{{ vault_domain_name }}"
