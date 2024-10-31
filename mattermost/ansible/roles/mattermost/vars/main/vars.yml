@@ -6,7 +6,7 @@ mm_stack_file: "{{ mm_directory }}/docker-stack.yml"
 mm_proxy_config_file: "{{ mm_directory }}/traefik.yml"
 
 # networks
-internal_network_name: "internal_network"
+mm_internal_network_name: "mm_internal_network"
 
 # postgresql service
 mm_postgresql_db: "{{ vault_postgres_db }}"
@@ -17,6 +17,3 @@ mm_postgresql_password: "{{ vault_postgres_password }}"
 mm_sqlsettings_drivername: "postgres"
 mm_blevesettings_indexdir: "/mattermost/bleve-indexes"
 mm_servicesettings_siteurl: "http://localhost"
-
-# cloudflare
-mm_cloudflare_dns_api_token: "{{ vault_cloudflare_dns_api_token }}"

@@ -1,13 +1,13 @@
 version: '3.8'
 
 networks:
+  public-network:
+    external: true
+    name: "{{ public_network_name }}"
   internal-network:
     driver: overlay
     internal: true
-    name: "{{ internal_network_name }}"
-  external-network:
-    external: true
-    name: "{{ external_network_name }}"
+    name: "{{ mm_internal_network_name }}"
 
 volumes:
   mattermost-postgresql:
@@ -25,53 +25,9 @@ secrets:
     external: true
   mattermost_secret_postgresql_password:
     external: true
-  cloudflare_dns_api_token:
-    external: true
 
 services:
-  traefik:
-    image: "{{ traefik_image }}"
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./:/certs/
-    secrets:
-      - cloudflare_dns_api_token
-    environment:
-      TZ: "{{ timezone }}"
-      CF_DNS_API_TOKEN_FILE: /run/secrets/cloudflare_dns_api_token
-    networks:
-      - external-network
-    dns:
-      - 1.1.1.1
-      - 1.0.0.1
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.proxy == true
-      update_config:
-        parallelism: 1
-        order: start-first
-      restart_policy:
-        condition: on-failure
-      labels:
-        # core
-        - traefik.enable=true
-        - traefik.docker.network={{ external_network_name }}
-        # http
-        - traefik.http.routers.traefik.entrypoints=web_insecure
-        - traefik.http.routers.traefik.rule=Host(`{{ traefik_http_route }}`)
-        - traefik.http.routers.traefik.service=api@internal
-        # core
-        - traefik.http.services.traefik.loadbalancer.server.port=8080
-
   postgres:
-    depends_on:
-      - traefik
     image: "{{ postgresql_image }}"
     volumes:
       - mattermost-postgresql:/var/lib/postgresql/data
@@ -119,8 +75,8 @@ services:
       MM_BLEVESETTINGS_INDEXDIR: "{{ mm_blevesettings_indexdir }}"
       MM_SERVICESETTINGS_SITEURL: "{{ mm_servicesettings_siteurl }}"
     networks:
+      - public-network
       - internal-network
-      - external-network
     deploy:
       replicas: 3
       placement:
@@ -135,7 +91,7 @@ services:
       labels:
         # core
         - traefik.enable=true
-        - traefik.docker.network={{ external_network_name }}
+        - traefik.docker.network={{ public_network_name }}
         - traefik.http.services.mattermost.loadbalancer.server.port=8065
         # http
         - traefik.http.routers.mattermost.entrypoints=web_insecure

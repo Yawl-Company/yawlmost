@@ -1,4 +1,7 @@
+---
+# general
 stacks_directory: "/home/{{ ansible_user }}"
+timezone: "UTC"
 
 # public network
-external_network_name: "external_network"
+public_network_name: "public_network"

@@ -1,0 +1,9 @@
+---
+# deploy
+proxy_stack_name: "proxy"
+proxy_directory: "{{ stacks_directory }}/{{ proxy_stack_name }}"
+proxy_stack_file: "{{ proxy_directory }}/docker-stack.yml"
+proxy_config_file: "{{ proxy_directory }}/traefik.yml"
+
+# cloudflare
+cloudflare_dns_api_token: "{{ vault_cloudflare_dns_api_token }}"

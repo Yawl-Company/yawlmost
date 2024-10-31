@@ -5,4 +5,4 @@ portainer_directory: "{{ stacks_directory }}/{{ portainer_stack_name }}"
 portainer_stack_file: "{{ portainer_directory }}/docker-stack.yml"
 
 # networks
-internal_network_name: "portainer_internal_network"
+portainer_internal_network_name: "portainer_internal_network"

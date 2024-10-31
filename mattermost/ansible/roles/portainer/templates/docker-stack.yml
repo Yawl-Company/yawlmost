@@ -1,5 +1,17 @@
 version: '3.8'
 
+networks:
+  public-network:
+    external: true
+    name: "{{ public_network_name }}"
+  internal-network:
+    driver: overlay
+    internal: true
+    name: "{{ portainer_internal_network_name }}"
+
+volumes:
+  portainer_data:
+
 services:
   agent:
     image: portainer/agent:2.21.3
@@ -17,8 +29,8 @@ services:
     volumes:
       - portainer_data:/data
     networks:
+      - public-network
       - internal-network
-      - external-network
     deploy:
       mode: replicated
       replicas: 1
@@ -28,22 +40,9 @@ services:
       labels:
         # core
         - traefik.enable=true
-        - traefik.docker.network={{ external_network_name }}
+        - traefik.docker.network={{ public_network_name }}
         # http
         - traefik.http.routers.portainer.rule=Host(`{{ portainer_http_route }}`)
         - traefik.http.routers.portainer.entrypoints=web_insecure
         - traefik.http.services.portainer.loadbalancer.server.port=9000
         - traefik.http.routers.portainer.service=portainer
-
-networks:
-  internal-network:
-    driver: overlay
-    internal: true
-    name: "{{ internal_network_name }}"
-  external-network:
-    driver: overlay
-    internal: false
-    name: "{{ external_network_name }}"
-
-volumes:
-  portainer_data:

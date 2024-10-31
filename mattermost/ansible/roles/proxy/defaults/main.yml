@@ -1,0 +1,14 @@
+---
+# general
+timezone: "UTC"
+
+# images
+traefik_image: "traefik:latest"
+
+# routes
+traefik_http_route: "traefik.localhost"
+traefik_https_route: "traefik.yawlco.tech"
+
+# hosting
+yawl_owner_mail: "bobniklv@gmail.com"
+yawl_domain: "yawlco.tech"

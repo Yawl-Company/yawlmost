@@ -11,6 +11,14 @@
   roles:
     - swarm
 
+- name: "Deploy Traefik Proxy"
+  hosts: leaders
+  become: true
+  vars_files:
+    - "vault/main.yml"
+  roles:
+    - proxy
+
 - name: "Deploy Portainer"
   hosts: leaders
   become: true
@@ -20,5 +28,7 @@
 - name: "Deploy Mattermost"
   hosts: leaders
   become: true
+  vars_files:
+    - "vault/main.yml"
   roles:
     - mattermost
