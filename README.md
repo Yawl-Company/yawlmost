@@ -44,7 +44,7 @@ This project leverages VMware as the provider for creating a robust and scalable
     vagrant up
     ```
    
-Once the setup is complete, Mattermost will be accessible at http://localhost:8065.
+Once the setup is complete, Mattermost will be accessible at https://mattermost.<vault_domain_name>.
 
 ## 🔧 Development Setup
 

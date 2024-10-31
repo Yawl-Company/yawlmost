@@ -4,5 +4,6 @@ vault_postgres_db: <mattermost postgresql database name>
 vault_postgres_user: <mattermost postgresql username>
 vault_postgres_password: <mattermost postgresql password>
 
+vault_domain_name: <your domain>
 vault_cloudflare_owner_mail: <your cloudflare registration domain>
 vault_cloudflare_dns_api_token: <your cloudflare API token>
