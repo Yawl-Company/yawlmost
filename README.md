@@ -24,27 +24,28 @@ This project leverages VMware as the provider for creating a robust and scalable
 
 ### 🔧 Installation Steps
 
-1. **Clone the repository:**
-    ```shell
-    git clone git@github.com:Yawl-Company/yawlmost.git
-    cd yawlmost/mattermost
-    ```
+#### **Clone the repository:**
+```shell
+git clone git@github.com:Yawl-Company/yawlmost.git
+cd yawlmost/mattermost
+```
+#### **Configure Ansible Vault:**
+1. Edit variables in `mattermost/ansible/vault/main.yml.example` as needed for your environment
+2. Rename the file to `main.yml` 
+3. Encrypt the updated file using ansible-vault:
 
-2. **Configure Ansible Vault:**
-- Edit variables in mattermost/ansible/vault/main.yml.example as needed for your environment
-- Rename the file to main.yml
-- Encrypt the updated file:
-  ```shell
-  ansible-vault encrypt mattermost/ansible/vault/main.yml
-  ```
-- Create ansible/.vault_password file and put your vault password into it
-
-3. **Start the Vagrant environment:**
     ```shell
-    vagrant up
+    ansible-vault encrypt mattermost/ansible/vault/main.yml
     ```
-   
-Once the setup is complete, Mattermost will be accessible at https://mattermost.<vault_domain_name>.
+4. Create `ansible/.vault_password` file and put your vault password into it
+
+####  **Start the Vagrant environment:**
+```shell
+vagrant up
+```
+
+#### Open mattermost
+Once the setup is complete, Mattermost will be accessible at `https://mattermost.<vault_domain_name>`.
 
 ## 🔧 Development Setup
 
