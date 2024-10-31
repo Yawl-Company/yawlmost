@@ -9,6 +9,7 @@ traefik_image: "traefik:latest"
 
 # routes
 traefik_http_route: "traefik.localhost"
+traefik_https_route: "traefik.yawlco.tech"
 mattermost_http_route: "mattermost.localhost"
 mattermost_https_route: "mattermost.yawlco.tech"
 
