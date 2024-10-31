@@ -6,8 +6,7 @@ networks:
     internal: true
     name: "{{ internal_network_name }}"
   external-network:
-    driver: overlay
-    internal: false
+    external: true
     name: "{{ external_network_name }}"
 
 volumes:

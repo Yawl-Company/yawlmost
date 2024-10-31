@@ -6,7 +6,6 @@ mm_stack_file: "{{ mm_directory }}/docker-stack.yml"
 mm_proxy_config_file: "{{ mm_directory }}/traefik.yml"
 
 # networks
-external_network_name: "external_network"
 internal_network_name: "internal_network"
 
 # postgresql service
