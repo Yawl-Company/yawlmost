@@ -44,9 +44,12 @@ services:
         # core
         - traefik.enable=true
         - traefik.docker.network={{ public_network_name }}
+        - traefik.http.services.traefik.loadbalancer.server.port=8080
         # http
         - traefik.http.routers.traefik.entrypoints=web_insecure
         - traefik.http.routers.traefik.rule=Host(`{{ traefik_http_route }}`)
         - traefik.http.routers.traefik.service=api@internal
-        # core
-        - traefik.http.services.traefik.loadbalancer.server.port=8080
+        # tls
+        - traefik.http.routers.traefik.tls=false
+        - traefik.http.routers.traefik.tls.domains[0].main={{ domain_name }}
+        - traefik.http.routers.traefik.tls.domains[0].sans=*.{{ domain_name }}

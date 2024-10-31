@@ -104,5 +104,3 @@ services:
         - traefik.http.routers.mattermost-secure.rule=Host(`{{ mattermost_https_route }}`)
         - traefik.http.routers.mattermost-secure.tls=true
         - traefik.http.routers.mattermost-secure.tls.certresolver=cloudflare
-        - traefik.http.routers.mattermost-secure.tls.domains[0].main={{ domain_name }}
-        - traefik.http.routers.mattermost-secure.tls.domains[0].sans=*.{{ domain_name }}
