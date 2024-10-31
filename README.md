@@ -29,6 +29,16 @@ This project leverages VMware as the provider for creating a robust and scalable
 git clone git@github.com:Yawl-Company/yawlmost.git
 cd yawlmost/mattermost
 ```
+
+3. Configure Ansible Vault:
+- Edit variables in mattermost/ansible/vault/main.yml.example as needed for your environment
+- Rename the file to main.yml
+- Encrypt the updated file:
+```shell
+ansible-vault encrypt mattermost/ansible/vault/main.yml
+```
+- Create ansible/.vault_password file and put your vault password into it
+
 2. **Start the Vagrant environment:**
 ```shell
 vagrant up
