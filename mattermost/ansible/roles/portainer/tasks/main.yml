@@ -1,12 +1,15 @@
+---
 - name: Ensure portainer directory exists
   file:
     path: "{{ portainer_directory }}"
     state: directory
 
-- name: Copy Docker Compose template
+- name: Copy templates
   template:
-    src: docker-stack.yml
-    dest: "{{ portainer_stack_file }}"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: docker-stack.yml, dest: '{{ portainer_stack_file }}' }
 
 - name: Deploy or update Portainer stack in Docker Swarm
   community.docker.docker_stack:

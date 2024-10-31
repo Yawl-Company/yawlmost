@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Bob Nicholson
-  description: Portainer deployment
+  description: Traefik proxy deployment
   company: Yawl
 
   license: Apache-2.0
@@ -9,6 +9,6 @@ galaxy_info:
   min_ansible_version: 2.1
 
   galaxy_tags: [
-    portainer
-    cluster
+    traefik
+    proxy
   ]

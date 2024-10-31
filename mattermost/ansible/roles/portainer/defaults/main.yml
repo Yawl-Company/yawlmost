@@ -1,0 +1,9 @@
+---
+# images
+service_name: "portainer"
+portainer_image: "{{ service_name }}/portainer-ce:2.21.3"
+agent_image: "{{ service_name }}/agent:2.21.3"
+
+# routes
+portainer_http_route: "{{ service_name }}.{{ localhost }}"
+portainer_https_route: "{{ service_name }}.{{ domain_name }}"
