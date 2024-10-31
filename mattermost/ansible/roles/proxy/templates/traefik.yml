@@ -14,7 +14,7 @@ entryPoints:
 certificatesResolvers:
   cloudflare:
     acme:
-      email: "{{ yawl_owner_mail }}"
+      email: "{{ domain_owner_mail }}"
       storage: /certs/acme.json
       dnsChallenge:
         provider: cloudflare
