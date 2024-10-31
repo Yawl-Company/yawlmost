@@ -7,7 +7,7 @@ networks:
   internal-network:
     driver: overlay
     internal: true
-    name: "{{ mm_internal_network_name }}"
+    name: "{{ mattermost_internal_network_name }}"
 
 volumes:
   mattermost-postgresql:
@@ -71,9 +71,9 @@ services:
       - mattermost_secret_postgresql_password
     environment:
       TZ: "{{ timezone }}"
-      MM_SQLSETTINGS_DRIVERNAME: "{{ mm_sqlsettings_drivername }}"
-      MM_BLEVESETTINGS_INDEXDIR: "{{ mm_blevesettings_indexdir }}"
-      MM_SERVICESETTINGS_SITEURL: "{{ mm_servicesettings_siteurl }}"
+      MM_SQLSETTINGS_DRIVERNAME: "{{ mattermost_sqlsettings_drivername }}"
+      MM_BLEVESETTINGS_INDEXDIR: "{{ mattermost_blevesettings_indexdir }}"
+      MM_SERVICESETTINGS_SITEURL: "{{ mattermost_servicesettings_siteurl }}"
     networks:
       - public-network
       - internal-network
@@ -104,5 +104,5 @@ services:
         - traefik.http.routers.mattermost-secure.rule=Host(`{{ mattermost_https_route }}`)
         - traefik.http.routers.mattermost-secure.tls=true
         - traefik.http.routers.mattermost-secure.tls.certresolver=cloudflare
-        - traefik.http.routers.mattermost-secure.tls.domains[0].main={{ yawl_domain }}
-        - traefik.http.routers.mattermost-secure.tls.domains[0].sans=*.{{ yawl_domain }}
+        - traefik.http.routers.mattermost-secure.tls.domains[0].main={{ domain_name }}
+        - traefik.http.routers.mattermost-secure.tls.domains[0].sans=*.{{ domain_name }}

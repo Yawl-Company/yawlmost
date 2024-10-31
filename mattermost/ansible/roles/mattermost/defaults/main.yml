@@ -1,11 +1,9 @@
 ---
 # images
+service_name: "mattermost"
 mattermost_image: "ghcr.io/yawl-company/yawlmost-image/yawlmost"
 postgresql_image: "postgres:13-alpine"
 
 # routes
-mattermost_http_route: "mattermost.localhost"
-mattermost_https_route: "mattermost.yawlco.tech"
-
-# hosting
-yawl_domain: "yawlco.tech"
+mattermost_http_route: "{{ service_name }}.{{ domain_name }}"
+mattermost_https_route: "{{ service_name }}.{{ domain_name }}"
