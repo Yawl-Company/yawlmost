@@ -1,0 +1,16 @@
+---
+- name: Setup dependencies
+  become: true
+  ansible.builtin.import_tasks:
+    file: requirements.yml
+
+- name: Setup peers
+  become: true
+  ansible.builtin.import_tasks:
+    file: setup_peers.yml
+  when: inventory_hostname == gluster_setup_master
+
+- name: Setup bricks
+  become: true
+  ansible.builtin.import_tasks:
+    file: setup_bricks.yml

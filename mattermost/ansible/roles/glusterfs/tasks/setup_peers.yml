@@ -1,0 +1,8 @@
+---
+- name: Add each node to the trusted storage pool
+  gluster.gluster.gluster_peer:
+    state: present
+    nodes:
+      - "{{ hostvars[item].ansible_default_ipv4.address }}"
+  loop: "{{ groups['managers'] + groups['workers'] }}"
+  when: item != gluster_setup_master

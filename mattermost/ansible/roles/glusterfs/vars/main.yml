@@ -1,0 +1,5 @@
+---
+gluster_setup_master: "{{ groups['managers'][0] }}"
+gluster_setup_master_ip: "{{ hostvars[groups['managers'][0]].ansible_default_ipv4.address }}"
+
+gluster_bricks_directory: "/gluster/bricks"
