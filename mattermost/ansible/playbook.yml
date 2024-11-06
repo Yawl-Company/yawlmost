@@ -11,6 +11,11 @@
   roles:
     - swarm
 
+- name: "Setup GlusterFS"
+  hosts: managers,workers
+  roles:
+    - glusterfs
+
 - name: "Deploy Traefik Proxy"
   hosts: leaders
   become: true
