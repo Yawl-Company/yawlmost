@@ -20,3 +20,8 @@
   ansible.builtin.import_tasks:
     file: setup_volume.yml
   when: inventory_hostname == gluster_setup_master
+
+- name: Mount volume
+  become: true
+  ansible.builtin.import_tasks:
+    file: mount_volume.yml

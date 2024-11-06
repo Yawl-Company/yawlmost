@@ -1,0 +1,14 @@
+---
+- name: Create mount point
+  file:
+    path: "{{ gluster_mount_point }}"
+    state: directory
+    mode: '0755'
+
+- name: Mount GlusterFS volume
+  mount:
+    path: "{{ gluster_mount_point }}"
+    src: "localhost:/{{ gluster_volume_name }}"
+    fstype: glusterfs
+    opts: defaults,_netdev
+    state: mounted
