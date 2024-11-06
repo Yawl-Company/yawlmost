@@ -1,5 +1,16 @@
 ---
+# gluster cluster
 gluster_setup_master: "{{ groups['managers'][0] }}"
 gluster_setup_master_ip: "{{ hostvars[groups['managers'][0]].ansible_default_ipv4.address }}"
+all_gluster_nodes: "{{ (groups['managers'] + groups['workers']) 
+                   | map('extract', hostvars, ['ansible_default_ipv4', 'address']) 
+                   | list }}"
+slave_gluster_nodes: "{{ all_gluster_nodes
+                   | reject('equalto', gluster_setup_master_ip)
+                   | list }}"
+gluster_size: "{{ (groups['managers'] + groups['workers']) | length }}"
 
-gluster_bricks_directory: "/gluster/bricks"
+# gluster volume
+gluster_bricks_directory: "/gluster/bricks/mattermost"
+gluster_volume_name: "gfs"
+gluster_mount_point: "/mnt/glusterfs/{{ gluster_volume_name }}"
