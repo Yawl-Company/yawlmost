@@ -1,0 +1,9 @@
+---
+- name: Create Mattermost database directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ mattermost_postgresql_volume_directory }}"
+    state: directory
+    mode: '0755'
+    owner: 999
+    group: 999

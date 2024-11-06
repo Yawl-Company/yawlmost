@@ -32,7 +32,7 @@
     - portainer
 
 - name: "Deploy Mattermost"
-  hosts: leaders
+  hosts: all
   vars_files:
     - "vault/main.yml"
   roles:

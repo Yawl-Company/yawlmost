@@ -10,7 +10,6 @@ networks:
     name: "{{ mattermost_internal_network_name }}"
 
 volumes:
-  mattermost-postgresql:
   mattermost-config:
   mattermost-data:
   mattermost-logs:
@@ -30,7 +29,7 @@ services:
   postgres:
     image: "{{ postgresql_image }}"
     volumes:
-      - mattermost-postgresql:/var/lib/postgresql/data
+      - "{{ mattermost_postgresql_volume_directory }}:/var/lib/postgresql/data"
     secrets:
       - mattermost_secret_postgresql_db
       - mattermost_secret_postgresql_user
