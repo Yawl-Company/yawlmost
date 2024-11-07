@@ -5,6 +5,13 @@
     state: directory
     mode: '0755'
 
+- name: Ensure fstab entry exists for GlusterFS volume
+  lineinfile:
+    path: /etc/fstab
+    line: "localhost:/{{ gluster_volume_name }} {{ gluster_mount_point }} glusterfs defaults,_netdev"
+    state: present
+    create: yes
+
 - name: Mount GlusterFS volume
   mount:
     path: "{{ gluster_mount_point }}"
