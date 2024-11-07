@@ -8,14 +8,19 @@ mattermost_proxy_config_file: "{{ mattermost_directory }}/traefik.yml"
 # networks
 mattermost_internal_network_name: "mattermost_internal_network"
 
+# volumes
+# todo: fix DRY (repetitive value from glusterfs role)
+mattermost_volume_directory: "/mnt/glusterfs/gfs"
+
 # postgresql service
 mattermost_postgresql_db: "{{ vault_postgres_db }}"
 mattermost_postgresql_user: "{{ vault_postgres_user }}"
 mattermost_postgresql_password: "{{ vault_postgres_password }}"
-# todo: fix DRY
-mattermost_postgresql_volume_directory: "/mnt/glusterfs/gfs/psql"
+mattermost_postgresql_volume_directory: "{{ mattermost_volume_directory }}/psql"
 
 # mattermost service
 mattermost_sqlsettings_drivername: "postgres"
 mattermost_blevesettings_indexdir: "/mattermost/bleve-indexes"
 mattermost_servicesettings_siteurl: "http://localhost"
+mattermost_data_volume_directory: "{{ mattermost_volume_directory }}/mattermost_data"
+mattermost_config_volume_directory: "{{ mattermost_volume_directory }}/mattermost_config"
