@@ -18,7 +18,6 @@
 
 - name: "Deploy Traefik Proxy"
   hosts: leaders
-  become: true
   vars_files:
     - "vault/main.yml"
   roles:
