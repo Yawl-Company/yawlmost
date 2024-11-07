@@ -51,7 +51,6 @@ services:
         order: stop-first
       restart_policy:
         condition: on-failure
-        max_attempts: 2
 
   mattermost:
     depends_on:
@@ -86,7 +85,6 @@ services:
         order: start-first
       restart_policy:
         condition: on-failure
-        max_attempts: 2
       labels:
         # core
         - traefik.enable=true
