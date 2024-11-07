@@ -1,0 +1,17 @@
+---
+- name: Unmount GlusterFS volume
+  mount:
+    path: "{{ gluster_mount_point }}"
+    state: unmounted
+
+- name: Remove GlusterFS volume
+  gluster.gluster.gluster_volume:
+    state: absent
+    name: "{{ gluster_volume_name }}"
+  when: inventory_hostname == gluster_setup_master
+
+- name: Delete nodes from the trusted storage pool
+  gluster.gluster.gluster_peer:
+    state: absent
+    nodes: "{{ slave_gluster_nodes }}"
+  when: inventory_hostname == gluster_setup_master

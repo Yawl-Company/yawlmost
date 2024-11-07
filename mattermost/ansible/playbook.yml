@@ -11,9 +11,13 @@
   roles:
     - swarm
 
+- name: "Setup GlusterFS"
+  hosts: managers,workers
+  roles:
+    - glusterfs
+
 - name: "Deploy Traefik Proxy"
   hosts: leaders
-  become: true
   vars_files:
     - "vault/main.yml"
   roles:
@@ -21,13 +25,13 @@
 
 - name: "Deploy Portainer"
   hosts: leaders
-  become: true
+  vars_files:
+    - "vault/main.yml"
   roles:
     - portainer
 
 - name: "Deploy Mattermost"
-  hosts: leaders
-  become: true
+  hosts: all
   vars_files:
     - "vault/main.yml"
   roles:

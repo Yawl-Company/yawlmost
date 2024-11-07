@@ -1,0 +1,22 @@
+---
+- name: Create gluster volume
+  gluster.gluster.gluster_volume:
+    state: present
+    name: "{{ gluster_volume_name }}"
+    brick: "{{ gluster_bricks_directory }}"
+    replicas: "{{ gluster_size }}"
+    cluster: "{{ all_gluster_nodes }}"
+    force: true
+  run_once: true
+
+- name: Start gluster volume
+  gluster.gluster.gluster_volume:
+    state: started
+    name: "{{ gluster_volume_name }}"
+
+- name: Turn on Performance Translators
+  gluster.gluster.gluster_volume:
+    state: present
+    name: "{{ gluster_volume_name }}"
+    options:
+        performance.stat-prefetch: 'off'

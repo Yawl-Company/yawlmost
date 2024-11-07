@@ -1,19 +1,13 @@
 ---
-- name: Update APT Cache
-  apt:
-    update_cache: yes
-    force_apt_get: yes
-
-- name: Remove apt lock file
-  file:
-    state: absent
-    path: "/var/lib/dpkg/lock"
-
-- name: Upgrade all packages to the latest version
-  apt:
-    name: "*"
-    state: latest
-    force_apt_get: yes
+- name: Install packages
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+    state: present
 
 - name: Add Docker GPG key
   ansible.builtin.apt_key:
@@ -24,6 +18,10 @@
   ansible.builtin.apt_repository:
     repo: "{{ docker_apt_repository }}"
     state: present
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
 
 - name: Install Docker-CE
   ansible.builtin.apt:

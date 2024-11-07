@@ -1,0 +1,6 @@
+---
+- name: Ensure GlusterFS brick directories exist
+  ansible.builtin.file:
+    path: "{{ gluster_bricks_directory }}"
+    state: directory
+    mode: '0755'

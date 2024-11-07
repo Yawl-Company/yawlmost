@@ -1,0 +1,12 @@
+---
+- name: Install GlusterFS server
+  ansible.builtin.apt:
+    name: glusterfs-server
+    state: present
+    update_cache: yes
+
+- name: Start and enable GlusterFS service
+  systemd:
+    name: glusterd
+    state: started
+    enabled: yes
