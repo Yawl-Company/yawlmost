@@ -8,7 +8,7 @@
 - name: Ensure fstab entry exists for GlusterFS volume
   lineinfile:
     path: /etc/fstab
-    line: "localhost:/{{ gluster_volume_name }} {{ gluster_mount_point }} glusterfs defaults,_netdev"
+    line: "localhost:/{{ gluster_volume_name }} {{ gluster_mount_point }} glusterfs {{ glusterfs_options }}"
     state: present
     create: yes
 
@@ -17,5 +17,5 @@
     path: "{{ gluster_mount_point }}"
     src: "localhost:/{{ gluster_volume_name }}"
     fstype: glusterfs
-    opts: defaults,_netdev
+    opts: "{{ glusterfs_options }}"
     state: mounted
