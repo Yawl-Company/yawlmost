@@ -13,3 +13,10 @@
   gluster.gluster.gluster_volume:
     state: started
     name: "{{ gluster_volume_name }}"
+
+- name: Turn on Performance Translators
+  gluster.gluster.gluster_volume:
+    state: present
+    name: "{{ gluster_volume_name }}"
+    options:
+        performance.stat-prefetch: 'off'
