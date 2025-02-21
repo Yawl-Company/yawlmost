@@ -1,0 +1,38 @@
+---
+- name: "Install Docker"
+  hosts: all
+  become: true
+  roles:
+    - docker
+
+- name: "Setup Docker Swarm"
+  hosts: all
+  become: true
+  roles:
+    - swarm
+
+- name: "Setup GlusterFS"
+  hosts: managers,workers
+  roles:
+    - glusterfs
+
+- name: "Deploy Traefik Proxy"
+  hosts: leaders
+  vars_files:
+    - "vault/main.yml"
+  roles:
+    - proxy
+
+- name: "Deploy Portainer"
+  hosts: leaders
+  vars_files:
+    - "vault/main.yml"
+  roles:
+    - portainer
+
+- name: "Deploy Mattermost"
+  hosts: all
+  vars_files:
+    - "vault/main.yml"
+  roles:
+    - mattermost

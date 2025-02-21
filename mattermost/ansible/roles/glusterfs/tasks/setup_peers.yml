@@ -1,0 +1,5 @@
+---
+- name: Add each node to the trusted storage pool
+  gluster.gluster.gluster_peer:
+    state: present
+    nodes: "{{ slave_gluster_nodes }}"

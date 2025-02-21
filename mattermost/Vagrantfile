@@ -1,0 +1,85 @@
+# Core vagrant configuration
+VAGRANTFILE_API_VERSION = "2"
+
+# Core machines configuration
+# See: https://docs.mattermost.com/install/install-ubuntu.html
+box = "bento/ubuntu-20.04-arm64"
+vm_memory = 2048
+vm_cpus = 2
+
+# Ansible provision configuration
+config_file = "ansible/ansible.cfg"
+playbook = "ansible/playbook.yml"
+
+# Cluster configuration
+managers_number = 3
+workers_number = 2
+
+leader = {
+    :hostname => "leader",
+    :box => box,
+    :ram => vm_memory,
+    :cpu => vm_cpus
+}
+
+managers = Array.new(managers_number - 1) do |i|
+  {
+    :hostname => "manager-#{i + 1}",
+    :box => box,
+    :ram => vm_memory,
+    :cpu => vm_cpus
+  }
+end
+
+workers = Array.new(workers_number) do |i|
+  {
+    :hostname => "worker-#{i + 1}",
+    :box => box,
+    :ram => vm_memory,
+    :cpu => vm_cpus
+  }
+end
+
+def configure_machine_node(config, machine, node)
+    node.vm.box = machine[:box]
+    node.vm.hostname = machine[:hostname]
+    # Do not specify custom ip
+    # See: https://developer.hashicorp.com/vagrant/docs/providers/vmware/known-issues
+    node.vm.network "private_network"
+    node.vm.provider "vmware_desktop" do |vmware|
+      vmware.memory = machine[:ram]
+      vmware.cpus = machine[:cpu]
+      vmware.allowlist_verified = true
+    end
+end
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    [*managers, *workers].each do |machine|
+        config.vm.define machine[:hostname] do |node|
+            configure_machine_node(config, machine, node)
+        end
+    end
+
+    config.vm.define leader[:hostname] do |node|
+        configure_machine_node(config, leader, node)
+
+        node.vm.network "forwarded_port", guest: 80, host: 80
+        node.vm.network "forwarded_port", guest: 443, host: 443
+
+        node.vm.provision "ansible" do |ansible|
+            ansible.compatibility_mode = "2.0"
+            ansible.config_file = config_file
+            ansible.playbook = playbook
+            ansible.limit = "all"
+            ansible.groups = {
+                "leaders" => [leader[:hostname]],
+                "managers" => managers.map {
+                    |manager| manager[:hostname]
+                },
+                "workers" => workers.map {
+                    |worker| worker[:hostname]
+                },
+            }
+        end
+    end
+end

@@ -1,0 +1,103 @@
+version: '3.8'
+
+networks:
+  public-network:
+    external: true
+    name: "{{ public_network_name }}"
+  internal-network:
+    driver: overlay
+    internal: true
+    name: "{{ mattermost_internal_network_name }}"
+
+volumes:
+  mattermost-config:
+  mattermost-data:
+  mattermost-logs:
+  mattermost-plugins:
+  mattermost-client-plugins:
+  mattermost-bleve-indexes:
+
+secrets:
+  mattermost_secret_postgresql_db:
+    external: true
+  mattermost_secret_postgresql_user:
+    external: true
+  mattermost_secret_postgresql_password:
+    external: true
+
+services:
+  postgres:
+    image: "{{ postgresql_image }}"
+    volumes:
+      - "{{ mattermost_postgresql_volume_directory }}:/var/lib/postgresql/data"
+    secrets:
+      - mattermost_secret_postgresql_db
+      - mattermost_secret_postgresql_user
+      - mattermost_secret_postgresql_password
+    environment:
+      TZ: "{{ timezone }}"
+      POSTGRES_USER_FILE: /run/secrets/mattermost_secret_postgresql_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/mattermost_secret_postgresql_password
+      POSTGRES_DB_FILE: /run/secrets/mattermost_secret_postgresql_db
+    networks:
+      - internal-network
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.proxy != true
+      update_config:
+        parallelism: 1
+        order: stop-first
+      restart_policy:
+        condition: on-failure
+
+  mattermost:
+    depends_on:
+      - postgres
+    image: "{{ mattermost_image }}"
+    volumes:
+      - mattermost-config:/mattermost/config
+      - mattermost-data:/mattermost/data
+      - mattermost-logs:/mattermost/logs
+      - mattermost-plugins:/mattermost/plugins
+      - mattermost-client-plugins:/mattermost/client/plugins
+      - mattermost-bleve-indexes:/mattermost/bleve-indexes
+    secrets:
+      - mattermost_secret_postgresql_db
+      - mattermost_secret_postgresql_user
+      - mattermost_secret_postgresql_password
+    environment:
+      TZ: "{{ timezone }}"
+      MM_SQLSETTINGS_DRIVERNAME: "{{ mattermost_sqlsettings_drivername }}"
+      MM_BLEVESETTINGS_INDEXDIR: "{{ mattermost_blevesettings_indexdir }}"
+      MM_SERVICESETTINGS_SITEURL: "{{ mattermost_servicesettings_siteurl }}"
+    networks:
+      - public-network
+      - internal-network
+    deploy:
+      replicas: 3
+      placement:
+        constraints:
+          - node.labels.proxy != true
+      update_config:
+        parallelism: 2
+        order: start-first
+      restart_policy:
+        condition: on-failure
+      labels:
+        # core
+        - traefik.enable=true
+        - traefik.docker.network={{ public_network_name }}
+        - traefik.http.services.mattermost.loadbalancer.server.port=8065
+        # http
+        - traefik.http.routers.mattermost.entrypoints=web_insecure
+        - traefik.http.routers.mattermost.rule=Host(`{{ mattermost_http_route }}`)
+        # http -> https bridge
+        - traefik.http.routers.mattermost.middlewares=https_redirect
+        - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
+        # https
+        - traefik.http.routers.mattermost-secure.entrypoints=web_secure
+        - traefik.http.routers.mattermost-secure.rule=Host(`{{ mattermost_https_route }}`)
+        - traefik.http.routers.mattermost-secure.tls=true
+        - traefik.http.routers.mattermost-secure.tls.certresolver=cloudflare

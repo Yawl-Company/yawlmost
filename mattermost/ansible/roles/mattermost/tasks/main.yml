@@ -1,0 +1,10 @@
+---
+- name: Setup volume
+  ansible.builtin.import_tasks:
+    file: volume.yml
+  when: inventory_hostname not in groups['leaders']
+
+- name: Deploy Mattermost
+  ansible.builtin.import_tasks:
+    file: deploy.yml
+  when: inventory_hostname in groups['leaders']

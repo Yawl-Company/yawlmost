@@ -1,0 +1,17 @@
+---
+- name: Initialize Docker Swarm on leader
+  community.docker.docker_swarm:
+    state: present
+    advertise_addr: "{{ ansible_default_ipv4.address }}"
+  register: swarm_init
+
+- name: Retrieve the Swarm Info
+  community.docker.docker_swarm_info:
+    nodes: true
+  register: swarm_info
+
+- name: Add label to the leader node for Proxy
+  community.docker.docker_node:
+    hostname: "{{ inventory_hostname }}"
+    labels:
+      proxy: "true"

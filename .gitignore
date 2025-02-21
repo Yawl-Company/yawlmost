@@ -1,2 +1,5 @@
 .idea
 **.iml
+.vagrant
+.vault_password
+**/vault/main.yml

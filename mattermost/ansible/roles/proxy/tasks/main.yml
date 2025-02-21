@@ -1,0 +1,29 @@
+---
+- name: Ensure proxy stack directory exists
+  file:
+    path: "{{ proxy_directory }}"
+    state: directory
+
+- name: Ensure Proxy secrets exist
+  community.docker.docker_secret:
+    name: "{{ item.name }}"
+    data: "{{ item.value }}"
+    state: present
+  loop:
+    - { name: cloudflare_dns_api_token, value: "{{ cloudflare_dns_api_token }}" }
+  no_log: true
+
+- name: Copy templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: docker-stack.yml, dest: '{{ proxy_stack_file }}' }
+    - { src: traefik.yml, dest: '{{ proxy_config_file }}' }
+
+- name: Deploy or update Proxy stack in Docker Swarm
+  community.docker.docker_stack:
+    name: "{{ proxy_stack_name }}"
+    state: present
+    compose:
+      - "{{ proxy_stack_file }}"

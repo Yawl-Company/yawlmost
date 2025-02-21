@@ -1,0 +1,48 @@
+version: '3.8'
+
+networks:
+  public-network:
+    external: true
+    name: "{{ public_network_name }}"
+  internal-network:
+    driver: overlay
+    internal: true
+    name: "{{ portainer_internal_network_name }}"
+
+volumes:
+  portainer_data:
+
+services:
+  agent:
+    image: "{{ agent_image }}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - internal-network
+    deploy:
+      mode: global
+
+  portainer:
+    image: "{{ portainer_image }}"
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    volumes:
+      - portainer_data:/data
+    networks:
+      - public-network
+      - internal-network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.proxy == true
+      labels:
+        # core
+        - traefik.enable=true
+        - traefik.docker.network={{ public_network_name }}
+        # http
+        - traefik.http.routers.portainer.rule=Host(`{{ portainer_http_route }}`)
+        - traefik.http.routers.portainer.entrypoints=web_insecure
+        - traefik.http.services.portainer.loadbalancer.server.port=9000
+        - traefik.http.routers.portainer.service=portainer

@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: Bob Nicholson
+  description: Traefik proxy deployment
+  company: Yawl
+
+  license: Apache-2.0
+
+  min_ansible_version: 2.1
+
+  galaxy_tags: [
+    traefik
+    proxy
+  ]
